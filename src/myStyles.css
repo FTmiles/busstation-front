@@ -1,5 +1,6 @@
 .schedule-item{
     background-color: lightsalmon;
+    cursor: pointer;
 }
 
 .tooLate {

@@ -1,11 +1,15 @@
+import { Link } from "react-router-dom";
+
+
 function Navbar(){
+
 
 
 
     return (
       <nav className="navbar navbar-expand-sm">
         <div className="container-fluid">
-        <a className="navbar-brand" href="#">Today</a>
+        <Link to="/">Home</Link>
 
         {/* hamburger */}
         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
@@ -15,7 +19,7 @@ function Navbar(){
         <div className="collapse navbar-collapse" id="navbarText">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
-              <a className="nav-link active" aria-current="page" href="#">Tomorrow</a>
+              <Link to="/bus">Bus</Link>
             </li>
             <li className="nav-item">
               <a className="nav-link" href="#">Wednesday</a>

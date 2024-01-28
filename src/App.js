@@ -1,13 +1,27 @@
-import Header from "./Header.js"
-import Timetable from "./Timetable.js";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import Trip from "./pages/Trip.js";
+import Layout from "./pages/Layout";
+import NoPage from "./pages/NoPage.js";
+
+
+
+
 
 function App() {
   return (
-    <div className="App">
-      <Header />
-      <Timetable />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path="trip/:tripId" element={<Trip />} />
+
+          <Route path="*" element={<NoPage />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
+
 
 export default App;
