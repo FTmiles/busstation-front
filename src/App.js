@@ -1,8 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
-import Trip from "./pages/Trip.js";
-import Layout from "./pages/Layout";
-import NoPage from "./pages/NoPage.js";
+import Home from "./pages/home/Home.js";
+import Trip from "./pages/trip/Trip.js";
+import Layout from "./pages/layout/Layout.js";
+import NoPage from "./pages/nopage/NoPage.js";
 
 
 

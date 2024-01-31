@@ -1,4 +1,4 @@
-import Timetable from "./../Timetable.js";
+import Timetable from "pages/home/Timetable.js";
 
 
 function Home(){
