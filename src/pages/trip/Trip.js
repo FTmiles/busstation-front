@@ -3,11 +3,12 @@ import SingleTrip from "./SingleTrip";
 import { useParams } from "react-router-dom";
 import useFetch from "hooks/useFetch";
 import TripInfo from "./TripInfo";
+import config from "config";
 
 function Trip({ match }) {
   const { tripId } = useParams();
 
-  const { data, loading, error } = useFetch(`http://localhost:8080/scheduleItem/singleTrip/${tripId}`);
+  const { data, loading, error } = useFetch(`${config.API_ROOT_PATH}/scheduleItem/singleTrip/${tripId}`);
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
 

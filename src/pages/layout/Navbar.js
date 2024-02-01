@@ -1,47 +1,54 @@
-import { Link } from "react-router-dom";
+import React, { useState } from 'react';
+import { NavLink } from 'react-router-dom';
+import { useNavigate  } from 'react-router-dom';
+
+  //https://reactdatepicker.com/
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css'; // Import CSS
 
 
-function Navbar(){
+
+const Navbar = () => {
+    const [selectedDate, setSelectedDate] = useState(new Date());
+
+
+  const navigate = useNavigate();
+
+  const goToBus = () => {
+    navigate(`/future/${2}`); 
+  }
+
+  function handleDateChange(date){
+    //router navigation
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based, so we add 1 and pad with '0' if needed
+    const day = String(date.getDate()).padStart(2, '0'); // Pad with '0' if needed
+    navigate(`/date/${year}-${month}-${day}`); 
+
+    //set datepicker date
+    setSelectedDate(date)
+  }
 
 
 
+  return (
+    <>
+            <NavLink className="btn btn-primary" onClick={()=>{setSelectedDate(new Date())}} to="/">Today</NavLink>
 
-    return (
-      <nav className="navbar navbar-expand-sm">
-        <div className="container-fluid">
-        <Link to="/">Home</Link>
+            
 
-        {/* hamburger */}
-        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-          <span className="navbar-toggler-icon"></span>
-        </button>
-
-        <div className="collapse navbar-collapse" id="navbarText">
-          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-            <li className="nav-item">
-              <Link to="/bus">Bus</Link>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#">Wednesday</a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#">Thursday</a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#">Friday</a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#">Saturday</a>
-            </li>
-          </ul>
-          <span className="navbar-text">
-            welcome to use the navbar 6000
-          </span>
-        </div>
-       </div>
-       </nav>
-    )
-}
-
+              <div className="bg-primary d-inline-block ms-3" >
+                <DatePicker 
+                  
+                  selected={selectedDate}
+                  onChange={(date) => handleDateChange(date)}
+                  withPortal
+                  portalId="root-portal"
+                />
+              </div>
+</>
+   
+  );
+};
 
 export default Navbar;

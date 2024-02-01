@@ -6,3 +6,53 @@
 .tooLate {
     opacity: 1;
 }
+
+.bus-emoji {
+    font-size: min(10vw, 80px);
+}
+
+.select-station {
+    
+    width: calc(50% - 50px - 80px);
+
+    min-width: 300px;
+    max-width: 500px;
+}
+
+.swap-dep-dest {
+    background: white;
+    vertical-align:sub;
+    font-size: 25px;
+    padding:  5px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.swap-dep-dest>svg {
+
+    width: 35px;
+    height: 35px;
+    
+}
+
+
+.active {
+    background-color: red;
+}
+
+
+.dropdown-navbar button{
+    background: green;
+    width:300px;
+}
+
+
+/* animation swap sides */
+
+.flip-animation>div {
+    transition: transform 1s ease; /* Define transition for the transform property */
+  }
+  
+  .flipped {
+    transform: scaleX(-1); /* Flip horizontally */
+  }

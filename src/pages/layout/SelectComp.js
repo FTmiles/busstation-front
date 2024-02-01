@@ -1,6 +1,7 @@
 import React from "react";
 import AsyncSelect from "react-select/async";
 import { useState } from "react";
+import config from "config";
 
 export default (props) => {
   const [myDefault, setMyDefault] = useState("");
@@ -12,7 +13,7 @@ export default (props) => {
   const promiseOptions = async (inputValue) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/busstop/search?str=${inputValue}`
+        `${config.API_ROOT_PATH}/busstop/search?str=${inputValue}`
       );
       let data = await response.json();
       if (props.defaultEnabled && !myDefault && data) {
@@ -25,6 +26,7 @@ export default (props) => {
       return [];
     }
   };
+
 
   return (
     <div className={props.className}>

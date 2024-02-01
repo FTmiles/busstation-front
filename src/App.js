@@ -17,6 +17,7 @@ function App() {
           <Route path="trip/:tripId" element={<Trip />} />
 
           <Route path="*" element={<NoPage />} />
+          <Route path="/date/:date" element={<Home />} />
         </Route>
       </Routes>
     </BrowserRouter>

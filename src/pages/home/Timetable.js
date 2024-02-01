@@ -1,11 +1,12 @@
 import ScheduleItem from "./ScheduleItem";
 import { useState, useEffect } from "react";
+import config from "config";
 
 function Timetable() {
   const [scheduleItems, setScheduleItems] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:8080/scheduleItem/home")
+    fetch(`${config.API_ROOT_PATH}/scheduleItem/home`)
       .then((response) => response.json())
       .then((json) => {
         setScheduleItems(json);
