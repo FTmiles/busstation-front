@@ -37,7 +37,7 @@
 
 
 .active {
-    background-color: red;
+    font-weight: bold;
 }
 
 
@@ -56,3 +56,6 @@
   .flipped {
     transform: scaleX(-1); /* Flip horizontally */
   }
+
+
+  

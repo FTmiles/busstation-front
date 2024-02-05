@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useNavigate  } from 'react-router-dom';
+import { dateToString } from 'utils/myUtils'; 
 
   //https://reactdatepicker.com/
 import DatePicker from 'react-datepicker';
@@ -14,16 +15,10 @@ const Navbar = () => {
 
   const navigate = useNavigate();
 
-  const goToBus = () => {
-    navigate(`/future/${2}`); 
-  }
-
+ 
   function handleDateChange(date){
     //router navigation
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based, so we add 1 and pad with '0' if needed
-    const day = String(date.getDate()).padStart(2, '0'); // Pad with '0' if needed
-    navigate(`/date/${year}-${month}-${day}`); 
+        navigate(`/date/${dateToString(date)}`); 
 
     //set datepicker date
     setSelectedDate(date)
@@ -46,6 +41,7 @@ const Navbar = () => {
                   portalId="root-portal"
                 />
               </div>
+              <NavLink className="btn btn-secondary" to="/admin-panel">Admin panel</NavLink>
 </>
    
   );

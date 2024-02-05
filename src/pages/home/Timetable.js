@@ -1,18 +1,28 @@
 import ScheduleItem from "./ScheduleItem";
 import { useState, useEffect } from "react";
 import config from "config";
+import { useParams } from "react-router-dom";
+import { dateToString } from "utils/myUtils";
+
+import { useLocation } from 'react-router-dom';
+
 
 function Timetable() {
   const [scheduleItems, setScheduleItems] = useState([]);
+  const defaultDate = dateToString(new Date())
+  const { date = defaultDate } = useParams();
+  
+  const location = useLocation();
+
 
   useEffect(() => {
-    fetch(`${config.API_ROOT_PATH}/scheduleItem/home`)
+    fetch(`${config.API_ROOT_PATH}/scheduleItem/home/${date}`)
       .then((response) => response.json())
       .then((json) => {
         setScheduleItems(json);
       })
       .catch((e) => console.error(e));
-  }, []);
+  }, [date]);
 
   let start = 6,
     end = 23;
