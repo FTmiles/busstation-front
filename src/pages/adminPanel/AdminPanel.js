@@ -1,14 +1,24 @@
 import { Outlet } from "react-router-dom";
-import SideMenu from "pages/adminPanel/SideMenu";
+import SideBar from "pages/adminPanel/SideBar";
 
 function AdminPanel(){
 
 
     return (
-        <>
-        <SideMenu />
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-2" style={{background:"#bdbdbd"}}>
+    <SideBar />
+    </div>
+    
+
+    <div class="col-sm-10">
         <Outlet />
-        </>
+    </div>
+  </div>
+</div>
+
+
     )
 
 
