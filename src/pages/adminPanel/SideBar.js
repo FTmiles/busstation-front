@@ -6,18 +6,21 @@ export default function SideBar(){
 
     return(
 
-<ul class="nav flex-column">
-  <li class="nav-item">
+<ul className="nav flex-column">
+  <li className="nav-item">
     <NavLink className="nav-link" to="/admin-panel" end>Admin home</NavLink>
   </li>
-  <li class="nav-item">
+  <li className="nav-item">
   <NavLink className="nav-link" to="/admin-panel/holidays">Configure holidays</NavLink>
   </li>
-  <li class="nav-item">
+  <li className="nav-item">
+  <NavLink className="nav-link" to="/admin-panel/bus-stops">Bus stops</NavLink>
+  </li>
+  <li className="nav-item">
   <NavLink className="nav-link" to="/admin-panel/yearly-rules">Yearly rules</NavLink>
   </li>
-  <li class="nav-item">
-    <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+  <li className="nav-item">
+    <a className="nav-link disabled" aria-disabled="true">Disabled</a>
   </li>
 </ul>
 

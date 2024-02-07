@@ -57,5 +57,17 @@
     transform: scaleX(-1); /* Flip horizontally */
   }
 
+/*  ----    table actions   ----*/
 
-  
+
+
+.table-action-td {
+    display: flex;
+    justify-content: space-around;
+}
+
+.table-action-td>svg {
+    cursor: pointer;
+}
+
+

@@ -5,14 +5,14 @@ function AdminPanel(){
 
 
     return (
-<div class="container-fluid">
-  <div class="row">
-    <div class="col-sm-2" style={{background:"#bdbdbd"}}>
+<div className="container-fluid">
+  <div className="row">
+    <div className="col-sm-2" style={{background:"#bdbdbd"}}>
     <SideBar />
     </div>
     
 
-    <div class="col-sm-10">
+    <div className="col-sm-10">
         <Outlet />
     </div>
   </div>

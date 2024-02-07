@@ -4,9 +4,10 @@ import Trip from "pages/trip/Trip.js";
 import Layout from "pages/layout/Layout.js";
 import NoPage from "pages/nopage/NoPage.js";
 import AdminPanel from "pages/adminPanel/AdminPanel.js";
-import PublicHolidayManager from "pages/adminPanel/PublicHolidayManager";
+import PublicHolidayManager from "pages/adminPanel/publicHoliday/PublicHolidayManager";
 import AdminWelcome from "pages/adminPanel/AdminWelcome";
 import YearlyRules from "pages/adminPanel/YearlyRules";
+import BusStopManager from "pages/adminPanel/busStops/BusStopManager";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
 
              <Route path="holidays" element={<PublicHolidayManager />} />
              <Route path="yearly-rules" element={<YearlyRules />} />
+             <Route path="bus-stops" element={<BusStopManager />} />
           </Route>
 
         </Route>
