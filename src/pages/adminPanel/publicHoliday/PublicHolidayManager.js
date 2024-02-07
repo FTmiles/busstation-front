@@ -157,7 +157,7 @@ export default function PublicHolidayManager(){
         <table className='table table-striped '>
             <thead>
                 <tr>
-                    <th>Holiday</th><th style={{width:"150px"}}>Date</th><td style={{width:"140px"}}>Actions</td>
+                    <th>Holiday</th><th style={{width:"150px"}}>Date</th><th style={{width:"140px"}}>Actions</th>
                 </tr>
             </thead>
             <tbody>

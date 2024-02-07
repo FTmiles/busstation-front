@@ -1,33 +1,21 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalendar } from '@fortawesome/free-solid-svg-icons';
 
-  import DatePicker from 'react-datepicker';
-  import 'react-datepicker/dist/react-datepicker.css'; // Import CSS
-
-  import { useState } from "react";
-
-
-export default function EditableRow({editTRowData, handleEditFormChange, handleEditDatePickerChange, handleCancelClick}){
-
+export default function EditableRow({editTRowData, handleEditFormChange, handleCancelClick}){
+console.log(editTRowData);
     return (
         <tr>
             <td>
-                <input name="name" placeholder="Enter new holiday..." onChange={handleEditFormChange}
+                <input name="name" placeholder="Enter new bus stop..." onChange={handleEditFormChange}
                     className="form-control" value={editTRowData.name} required  
                     />            </td>
             <td>
-            <DatePicker 
-                    showIcon
-                    // selected={formData.calendarDate}
-                    selected={editTRowData.calendarDate}
-                    // onChange={(date) => handleDatePickerChange(date)}
-                    onChange={(date) => handleEditDatePickerChange(date)}
-                    dateFormat="MMM-dd"
-                    icon={<FontAwesomeIcon icon={faCalendar} />}
-                    dateFormatCalendar="MMMM"
-                    placeholderText="Select Date"
-                    className="form-control"
-                     />
+            <input name="coords" placeholder="Coordinates..." onChange={handleEditFormChange}
+                    className="form-control" value={editTRowData.coords} autoComplete="off" />
+            </td>
+            <td>
+                <div className="form-check form-switch">
+                    <input type="checkbox" name="defaultOption"  onChange={handleEditFormChange}
+                        className="form-check-input" checked={editTRowData.defaultOption} autoComplete="off" />
+                </div>
             </td>
             <td>
             <span className="table-action-td">

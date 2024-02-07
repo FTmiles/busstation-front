@@ -17,6 +17,9 @@ export default function SideBar(){
   <NavLink className="nav-link" to="/admin-panel/bus-stops">Bus stops</NavLink>
   </li>
   <li className="nav-item">
+  <NavLink className="nav-link" to="/admin-panel/lines">Bus lines</NavLink>
+  </li>
+  <li className="nav-item">
   <NavLink className="nav-link" to="/admin-panel/yearly-rules">Yearly rules</NavLink>
   </li>
   <li className="nav-item">

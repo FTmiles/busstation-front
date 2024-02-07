@@ -17,9 +17,9 @@ function Navbar() {
   
   return (
     <>
-      <div class="dropdown d-block d-md-none dropdown-navbar">
+      <div className="dropdown d-block d-md-none dropdown-navbar">
         <button
-          class="btn btn-secondary dropdown-toggle"
+          className="btn btn-secondary dropdown-toggle"
           type="button"
           data-bs-toggle="dropdown"
           aria-expanded="false"
@@ -32,9 +32,9 @@ function Navbar() {
       
 
 
-      <nav class="navbar navbar-expand-md ">
-        <div class="container-fluid">
-          <div class="collapse navbar-collapse" id="navbarNav">
+      <nav className="navbar navbar-expand-md ">
+        <div className="container-fluid">
+          <div className="collapse navbar-collapse" id="navbarNav">
             <NavUL aClass="nav-link" ulClass="navbar-nav" liClass="nav-item" clickFunc={setdropdownLabel} />
           </div>
         </div>
