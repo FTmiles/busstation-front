@@ -8,7 +8,8 @@ import PublicHolidayManager from "pages/adminPanel/publicHoliday/PublicHolidayMa
 import AdminWelcome from "pages/adminPanel/AdminWelcome";
 import YearlyRules from "pages/adminPanel/YearlyRules";
 import BusStopManager from "pages/adminPanel/busStops/BusStopManager";
-import BusLine from "pages/adminPanel/lines/BusLine";
+import BusLines from "pages/adminPanel/lines/BusLines";
+import SingleLine from "pages/adminPanel/lines/SingleLine";
 
 function App() {
   return (
@@ -26,7 +27,8 @@ function App() {
              <Route path="holidays" element={<PublicHolidayManager />} />
              <Route path="yearly-rules" element={<YearlyRules />} />
              <Route path="bus-stops" element={<BusStopManager />} />
-             <Route path="lines" element={<BusLine />} />
+             <Route path="lines" element={<BusLines />} />
+             <Route path="lines/:lineId" element={<SingleLine />} />
           </Route>
 
         </Route>

@@ -34,7 +34,7 @@ const Navbar = () => {
 
               <div className="bg-primary d-inline-block ms-3" >
                 <DatePicker 
-                  
+                  name='datePicker-linterNeedsNameOrId'
                   selected={selectedDate}
                   onChange={(date) => handleDateChange(date)}
                   withPortal

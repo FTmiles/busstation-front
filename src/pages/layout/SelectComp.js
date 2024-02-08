@@ -41,6 +41,7 @@ export default (props) => {
         value={myDefault}
         onChange={onChange}
         isClearable={true}
+        name="busStopSelect"
       />
     </div>
   );

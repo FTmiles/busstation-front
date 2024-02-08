@@ -56,6 +56,15 @@
   .flipped {
     transform: scaleX(-1); /* Flip horizontally */
   }
+/* animation for Line table expand collapse chevron */
+  .fa-chevron-down{
+    transition: transform 0.3s ease;
+  }
+
+  .expand-up {
+    transform: scaleY(-1); /* Flip horizontally */
+  }
+
 
 /*  ----    table actions   ----*/
 
@@ -71,3 +80,11 @@
 }
 
 
+.my-hover-effect:hover {
+    background-color: #e9e9e9;
+  }
+
+
+.my-cursor-pointer {
+    cursor: pointer;
+}
