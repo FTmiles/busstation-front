@@ -88,3 +88,14 @@
 .my-cursor-pointer {
     cursor: pointer;
 }
+
+
+
+/*=========Moves down by 50% of one table row=========*/
+/*First use for bus stop table, to move "distance" between two rows, between two stops*/
+.vertical-center {
+  position: relative;
+  transform: translateY(50%);
+}
+
+/*------------*/

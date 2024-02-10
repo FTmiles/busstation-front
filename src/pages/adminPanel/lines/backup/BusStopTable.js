@@ -1,19 +1,15 @@
 
 
 export default function BusStopTable({activeRoute}){
-
-    console.log("from inners", activeRoute);
+    console.log(activeRoute);
     return (
-        <table className="table d-inline-block ms-4 caption-top" style={{width:"auto"}}>
-          <caption>{activeRoute.routeNotes || "main"}</caption>
+        <table className="table" style={{width:"auto"}}>
             <thead>
-                <tr>
                 <th>Name</th><th>Distance</th>
-                </tr>
             </thead>
             <tbody>
                 {activeRoute?.stopsArr.map((stop, index)=>(
-                    <tr key={index}>
+                    <tr key={stop?.index}>
                         <td>{stop?.name}</td>
                         <td className="vertical-center">
                              {activeRoute.distanceMetersArr[index]?.distanceMeters}
