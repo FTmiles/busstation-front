@@ -2,7 +2,7 @@ import axios from "axios";
 import config from "config";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import BusStopTable from "../BusStopTable";
+import BusStopTableEdit from "./BusStopTableEdit";
 import { useLocation } from 'react-router-dom';
 
 export default function LinePageEdit(){
@@ -41,22 +41,51 @@ export default function LinePageEdit(){
 
     }
 
+    const handleChange = (e, path, index) =>{
+        const { name, value } = e.target;
+        console.log("my....name", name)
+        console.log("my....value", value)
+        // console.log("ass", data[name][index]["value"]);
+        console.log("data", data);
+        console.log("my index...", index)
+        setData(prevData => {
+            const newData = { ...prevData };
+            let currentData = newData;
+        
+            for (let key of path) 
+              currentData = currentData[key];
+
+            if (index !== null || index !== undefined)
+                currentData[index][name] = value;
+            else 
+                currentData[name] = value;
+        
+            return newData;
+          });
+        
+        
+
+        // if (name == "info")
+        //     setData(og => {
+        //         const copyOg = {...og};
+        //         copyOg[name][index]['value'] = value;
+        //         return copyOg;
+        //     })
+
+        // if (name ==)
+
+    }
 
     return(
         <main>
             <div className="d-flex flex-row justify-content-between align-items-center">
-            <h1>{data.name}</h1>
+             <input className="h1 " onChange={e => handleChange(e, ["name"])} value={data.name} />
             <div className="bg-secondary">
-            {/* <Link to={{
-                        pathname: `/admin-panel/lines/${lineId}/edit`,
-                        state: { "hello": "hi" }                
-                    }}
-                className="btn btn-primary"
-            >Edit</Link> */}
+
             <Link to={`/admin-panel/lines/${lineId}/edit`}
              state={data}
-                className="btn btn-primary"
-            >Edit</Link>
+                className="btn btn-success"
+            >Save</Link>
 
             </div>
             </div>
@@ -68,7 +97,9 @@ export default function LinePageEdit(){
                     <tbody>
                         {data.info.map((row, index)=>(
                             <tr key={index}>
-                                <td>{row.key}</td><td>{row.value}</td>
+                                <td>{row.key}</td><td>
+                                    <input className="" name="value" onChange={e => handleChange(e, ["info"], index)} value={row.value}/>
+                                    </td>
                             </tr>
                         ))}
                     </tbody>
@@ -92,7 +123,7 @@ export default function LinePageEdit(){
             <div className="row">
                 <div className="col bg-success">
                     {activeRouteIndexArr.map(index =>   (
-                        <BusStopTable key={index}  activeRoute={data.routes[index]} />    
+                        <BusStopTableEdit key={index}  activeRoute={data.routes[index]} index={index} handleChange={handleChange}/>    
                     )   )
 
                         
