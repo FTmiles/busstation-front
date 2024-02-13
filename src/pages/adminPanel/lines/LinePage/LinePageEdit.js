@@ -9,7 +9,8 @@ export default function LinePageEdit(){
     const[data, setData] = useState({info:[], routes:[{stopsArr:[]}], name:""});
     const[activeRouteIndexArr, setActiveRouteIndexArr] = useState([0]);
     const {lineId} = useParams();
-    
+    let typingDebounce = null;
+
     
 
     const location = useLocation();
@@ -41,45 +42,78 @@ export default function LinePageEdit(){
 
     }
 
-    const handleChange = (e, path, index) =>{
-        const { name, value } = e.target;
-        console.log("my....name", name)
-        console.log("my....value", value)
-        // console.log("ass", data[name][index]["value"]);
-        console.log("data", data);
-        console.log("my index...", index)
-        setData(prevData => {
-            const newData = { ...prevData };
-            let currentData = newData;
-        
-            for (let key of path) 
-              currentData = currentData[key];
+    const handleChange = (newValue, path, key, debounceTime=200) =>{
+        clearTimeout(typingDebounce);
 
-            if (index !== null || index !== undefined)
-                currentData[index][name] = value;
-            else 
-                currentData[name] = value;
-        
-            return newData;
-          });
-        
-        
+        console.log("Actual data structure - ", data)
+        console.log("DEBUG :: newValue", newValue)
+        console.log("DEBUG :: path", path)
+        console.log("DEBUG :: key", key)
 
-        // if (name == "info")
-        //     setData(og => {
-        //         const copyOg = {...og};
-        //         copyOg[name][index]['value'] = value;
-        //         return copyOg;
-        //     })
+        typingDebounce = setTimeout(() => {
+      
+            setData(ogData => {
+                const newData = { ...ogData };
+                let currentStep = newData; //walk the path, deeper and deeper
 
-        // if (name ==)
+
+                if (path !== null && path !== undefined){
+                    for (let step of path)
+                        currentStep = currentStep[step];
+                }
+
+                console.log("current step", currentStep)
+                    
+                currentStep[key] = newValue;
+                    
+
+                return newData;
+            });
+
+        }, debounceTime); //debounce
+    }
+
+
+    const handleAddStop = (routeIndex, i) => {
+        console.log("+1", routeIndex, i);
+        setData(og => {
+            const newData = {...og}
+            newData.routes[routeIndex].stopsArr.splice(i+1, 0, "")
+            newData.routes[routeIndex].distanceMetersList.splice(i+1, 0, "")
+            return newData
+        })
+    }
+
+    const handleRemoveStop = (routeIndex, i) => {
+        setData(og => {
+            const newData = {...og}
+            newData.routes[routeIndex].stopsArr.splice(i, 1)
+            newData.routes[routeIndex].distanceMetersList.splice(i, 1)
+            return newData
+        })    }
+
+    const handleStopCountChange = (newValue, index) => {
+        console.log("hehe", newValue);
+        const lastDefinedIndex = data.routes[index].stopsArr.findLastIndex(stop=> stop)
+        const surplus = newValue - lastDefinedIndex + 1;
+        console.log("surplus", surplus)
+
+        if (surplus > 0)
+            setData(og => {
+                const newData = {...og};
+                // newData.routes[index].stopsArr.splice(0, lastDefinedIndex, )
+                newData.routes[index].stopsArr.splice(lastDefinedIndex, 999, ...Array(surplus).fill({}))
+                // newData.routes[index].stopsArr.push([...Array(surplus).fill(undefined)])
+                return newData
+            })
 
     }
 
     return(
         <main>
             <div className="d-flex flex-row justify-content-between align-items-center">
-             <input className="h1 " onChange={e => handleChange(e, ["name"])} value={data.name} />
+             <input className="h1" name="name" defaultValue={data.name}
+                onChange={e => handleChange(e.target.value, [], "name")} />
             <div className="bg-secondary">
 
             <Link to={`/admin-panel/lines/${lineId}/edit`}
@@ -98,7 +132,8 @@ export default function LinePageEdit(){
                         {data.info.map((row, index)=>(
                             <tr key={index}>
                                 <td>{row.key}</td><td>
-                                    <input className="" name="value" onChange={e => handleChange(e, ["info"], index)} value={row.value}/>
+                                    <input className="" name="value" defaultValue={row.value}
+                                    onChange={e => handleChange(e.target.value, ["info", index], "value")} />
                                     </td>
                             </tr>
                         ))}
@@ -123,7 +158,15 @@ export default function LinePageEdit(){
             <div className="row">
                 <div className="col bg-success">
                     {activeRouteIndexArr.map(index =>   (
-                        <BusStopTableEdit key={index}  activeRoute={data.routes[index]} index={index} handleChange={handleChange}/>    
+                        <BusStopTableEdit 
+                        key={index} 
+                        activeRoute={data.routes[index]} 
+                        index={index} 
+                        handleChange={handleChange}
+                        handleAddStop={handleAddStop}
+                        handleRemoveStop={handleRemoveStop}
+                        handleStopCountChange={handleStopCountChange}
+                        />    
                     )   )
 
                         

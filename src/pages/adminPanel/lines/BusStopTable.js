@@ -16,7 +16,7 @@ export default function BusStopTable({activeRoute}){
                     <tr key={index}>
                         <td>{stop?.name}</td>
                         <td className="vertical-center">
-                             {activeRoute.distanceMetersArr[index]?.distanceMeters}
+                             {activeRoute.distanceMetersList[index]}
                          </td>
                     </tr>
                 ))}

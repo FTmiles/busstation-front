@@ -13,8 +13,6 @@ const handleChange = (e, path) =>{
 
         }
          currentData[name] = value;
-        //  console.log("LALALALA", currentData[name])
-
     
         return newData;
 
