@@ -1,15 +1,12 @@
-import useFetch from "hooks/useFetch"
-import config from "config";
-import axios from "axios";
 import ReadOnlyRow from "./ReadOnlyRow";
 import EditableRow from "./EditableRow";
+import { apiGetAllHolidays, apiPostHolidaysSave, apiHolidayDel } from "services/user.service.js"
+
 //
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendar } from '@fortawesome/free-solid-svg-icons';
 
-
 //
-
 //https://reactdatepicker.com/
   import DatePicker from 'react-datepicker';
   import 'react-datepicker/dist/react-datepicker.css'; // Import CSS
@@ -21,12 +18,16 @@ export default function PublicHolidayManager(){
     const [tableData, setTableData] = useState([]);
     const [editHolidayId, setEditHolidayId] = useState(null);
     const [editTRowData, setEditTRowData] = useState({name: '', calendarDate: ""})
+    const [errorMsg, setErrorMsg] = useState();
 
-    useEffect(()=>{
-        axios.get(`${config.API_ROOT_PATH}/holidays/all`)
-            .then(response => setTableData(response.data))
-            .catch(error=> console.log("error fetching data - publicHolidays", error))
-    }, [])
+
+    useEffect(() => {
+        apiGetAllHolidays().then(
+          response => setTableData(response.data), 
+          error => setErrorMsg(error?.response?.data?.message || error.message || error.toString())
+        )
+      }, [])
+    
 
     const handleAddFormChange = (event) => {
         const { name, value } = event.target;
@@ -67,18 +68,16 @@ export default function PublicHolidayManager(){
             name: formData.name,
             month: formData.month,
             day: formData.day,
-//            id: Math.floor(Math.random() * 10000) * -1
         }   
+        
 
-        axios.post(`${config.API_ROOT_PATH}/holidays/save1`, newHoliday)
+        apiPostHolidaysSave(newHoliday)
         .then(response => {
           console.log('Entry added successfully:', response.data);
           setTableData(oldVals => ([...oldVals, response.data]));
           setFormData({ name: '', calendarDate: '' });
         })
         .catch(error => console.error('Error adding entry:', error.message));
-        // setTableData(oldVals => ([...oldVals, newHoliday]))
-        // setFormData({ name: '', calendarDate: "" })
     }
     const handleEditFormSubmit = (event) => {
         event.preventDefault();
@@ -90,7 +89,9 @@ export default function PublicHolidayManager(){
             id: editHolidayId
         }
 
-        axios.post(`${config.API_ROOT_PATH}/holidays/save1`, editedHoliday)
+        
+
+        apiPostHolidaysSave(editedHoliday)
             .then(response => {
                 console.log("Entry updated successfully:", response.data);
                 setTableData(ogArray => {
@@ -125,9 +126,10 @@ export default function PublicHolidayManager(){
 
     const handleDeleteClick = (delHoliday) => {
         setTableData(og=> og.filter(x=> x !== delHoliday))
-        axios.delete(`${config.API_ROOT_PATH}/holidays/del1?id=${delHoliday.id}`)
+        apiHolidayDel(delHoliday.id)
     }
 
+    if (errorMsg) return <p className="alert alert-danger">{errorMsg}</p>;
     return (
         <>
             <h1>Manage public holidays</h1>

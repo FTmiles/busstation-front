@@ -1,11 +1,8 @@
-import config from "config";
-import axios from "axios";
 import ReadOnlyRow from "./ReadOnlyRow";
 import EditableRow from "./EditableRow";
 import TableSearch from "./TableSearch";
 //
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
+import { apiGetBusStopsAll, apiPostBusStopSave, apiGetBusStopSearch, apiDelBusStop } from "services/user.service.js"
 
 
 import { useState, useEffect } from "react";
@@ -20,9 +17,9 @@ export default function BusStopManager(){
     let debounceTimeout;
 
     useEffect(()=>{
-        axios.get(`${config.API_ROOT_PATH}/busstop/get/all`)
+        apiGetBusStopsAll()
             .then(response => setTableData(response.data))
-            .catch(error=> console.log("error fetching data - publicHolidays", error))
+            .catch(error=> console.log("error fetching data - Bus stops", error))
     }, [])
 
     const handleAddFormChange = (event) => {
@@ -50,7 +47,7 @@ export default function BusStopManager(){
     const handleAddFormSubmit = async (event) => {
         event.preventDefault();
 
-        axios.post(`${config.API_ROOT_PATH}/busstop/save/one`, formData)
+        apiPostBusStopSave(formData)
         .then(response => {
           console.log('Entry added successfully:', response.data);
           setTableData(oldVals => ([...oldVals, response.data]));
@@ -67,7 +64,7 @@ export default function BusStopManager(){
         event.preventDefault();
         setEditTRowData(og => ({...og, id:editRowId}))
 
-        axios.post(`${config.API_ROOT_PATH}/busstop/save/one`, editTRowData)
+        apiPostBusStopSave(editTRowData)
             .then(response => {
                 console.log("Entry updated successfully:", response.data);
                 setTableData(ogArray => {
@@ -89,16 +86,17 @@ export default function BusStopManager(){
     const handleCancelClick = () => setEditRowId(null);
     
 
-    const handleDeleteClick = (delHoliday) => {
-        setTableData(og=> og.filter(x=> x !== delHoliday))
-        axios.delete(`${config.API_ROOT_PATH}/busstop/delete/${delHoliday.id}`)
+    const handleDeleteClick = (row) => {
+        setTableData(og=> og.filter(x=> x !== row))
+        apiDelBusStop(row.id)
+
     }
 
     const handleSearchChange = (query) => {
       clearTimeout(debounceTimeout);
       debounceTimeout = setTimeout(() => {
 
-            axios.get(`${config.API_ROOT_PATH}/busstop/searchresults?query=${query}`)
+        apiGetBusStopSearch(query)
                 .then(response => {
                     console.log("Entry updated successfully:", response.data);
                     setTableData(

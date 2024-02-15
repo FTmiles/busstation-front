@@ -1,13 +1,9 @@
-function SingleTrip(props) {
-
-
-let stops = props.data.stops;
-
+function SingleTrip({stops, lineName}) {
 
 
   return (
     <div>
-      <h1> {props.data.lineName} - d </h1>
+      <h1> {lineName} - d </h1>
       <table className='table table-striped' style={{width: "auto"}}>
         <thead>
 
@@ -15,7 +11,7 @@ let stops = props.data.stops;
         <tbody>
             
       {stops.map(x=>(
-      <tr>
+      <tr key={x.id}>
         <td>{x.stopName}</td>
         <td>{x.timePoint}</td>
       </tr>

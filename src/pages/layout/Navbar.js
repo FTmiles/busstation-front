@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { NavLink, Link } from 'react-router-dom';
 import { useNavigate  } from 'react-router-dom';
 import { dateToString } from 'utils/myUtils'; 
 
@@ -7,11 +7,18 @@ import { dateToString } from 'utils/myUtils';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css'; // Import CSS
 
-
+import AuthService from 'services/auth.service';
 
 const Navbar = () => {
     const [selectedDate, setSelectedDate] = useState(new Date());
+    const [admin, setAdmin] = useState(undefined);
 
+
+  useEffect(() => {
+    const user = AuthService.getCurrentUser();
+    if (user?.roles.includes("ROLE_ADMIN")) 
+      setAdmin(user)
+  },[])
 
   const navigate = useNavigate();
 
@@ -24,15 +31,19 @@ const Navbar = () => {
     setSelectedDate(date)
   }
 
-
-
+ const handleLogOut = () => {
+  AuthService.logout();
+  navigate("/");        //navigate("/profile");
+  window.location.reload();
+ }
   return (
-    <>
-            <NavLink className="btn btn-primary" onClick={()=>{setSelectedDate(new Date())}} to="/">Today</NavLink>
+
+    <div className='d-flex align-items-center pb-1'>
+            <NavLink className="btn btn-primary mx-2" onClick={()=>{setSelectedDate(new Date())}} to="/">Today</NavLink>
 
             
 
-              <div className="bg-primary d-inline-block ms-3" >
+              <div className="d-inline-block ms-2" >
                 <DatePicker 
                   name='datePicker-linterNeedsNameOrId'
                   selected={selectedDate}
@@ -41,8 +52,12 @@ const Navbar = () => {
                   portalId="root-portal"
                 />
               </div>
-              <NavLink className="btn btn-secondary" to="/admin-panel">Admin panel</NavLink>
-</>
+              {admin && <>
+                  <NavLink className="btn btn-secondary ms-auto" to="/admin-panel">Admin board</NavLink>
+                  <Link onClick={handleLogOut} className="btn btn-secondary mx-2"> Log out</Link>
+                </>
+              }
+</div>
    
   );
 };

@@ -1,9 +1,8 @@
 import CreatableSelect from 'react-select/creatable';
-import config from 'config';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { apiGetBusStopsAll } from "services/user.service.js"
 
 
 let newId = -123;
@@ -22,7 +21,8 @@ export default function BusStopTableEdit({activeRoute, handleChange, index, hand
     }
     
     useEffect(() => {
-        axios.get(`${config.API_ROOT_PATH}/busstop/get/all`)
+        apiGetBusStopsAll()
+
         .then(response => setAllStops(response.data));
     }, [])
 

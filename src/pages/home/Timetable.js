@@ -5,24 +5,34 @@ import { useParams } from "react-router-dom";
 import { dateToString } from "utils/myUtils";
 
 import { useLocation } from 'react-router-dom';
-
+import {getHomeScheduleItems} from 'services/user.service.js';
 
 function Timetable() {
   const [scheduleItems, setScheduleItems] = useState([]);
+  const [errorMsg, setErrorMsg] = useState();
   const defaultDate = dateToString(new Date())
   const { date = defaultDate } = useParams();
   
   const location = useLocation();
 
 
-  useEffect(() => {
-    fetch(`${config.API_ROOT_PATH}/scheduleItem/home/${date}`)
-      .then((response) => response.json())
-      .then((json) => {
-        setScheduleItems(json);
-      })
-      .catch((e) => console.error(e));
-  }, [date]);
+useEffect(() => {
+  getHomeScheduleItems(date)
+    .then(
+      response => setScheduleItems(response.data), 
+      error => setErrorMsg(error?.response?.data?.message || error.message || error.toString())
+      )
+}, [date]);
+
+
+  // useEffect(() => {
+  //   fetch(`${config.API_ROOT_PATH}/scheduleItem/home/${date}`)
+  //     .then((response) => response.json())
+  //     .then((json) => {
+  //       setScheduleItems(json);
+  //     })
+  //     .catch((e) => console.error(e));
+  // }, [date]);
 
   let start = 6,
     end = 23;
@@ -38,6 +48,7 @@ function Timetable() {
 
   return (
     <main>
+      {errorMsg && <p className="alert alert-danger">{errorMsg}</p>}
       {range.map((r) => (
         <div key={r.hour}>
           <div className="d-inline-block p-2">

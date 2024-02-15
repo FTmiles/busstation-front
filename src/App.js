@@ -11,6 +11,7 @@ import BusStopManager from "pages/adminPanel/busStops/BusStopManager";
 import BusLines from "pages/adminPanel/lines/BusLines";
 import LinePage from "pages/adminPanel/lines/LinePage/LinePage";
 import LinePageEdit from "pages/adminPanel/lines/LinePage/LinePageEdit";
+import Login from "authComponents/Login";
 
 
 function App() {
@@ -35,6 +36,7 @@ function App() {
              <Route path="lines/:lineId/edit" element={<LinePageEdit />} />
              <Route path="lines/new" element={<LinePageEdit />} />
           </Route>
+          <Route path="/backdoor" element={<Login />} />
 
         </Route>
       </Routes>

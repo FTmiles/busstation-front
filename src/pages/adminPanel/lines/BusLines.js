@@ -1,13 +1,13 @@
-import axios from "axios"
 import { useEffect, useState } from "react"
-import config from "config"
 import LineTableRow from "./LineTableRow"
+import { apiGetLinesPreview } from "services/user.service.js"
+
 
 export default function BusLine(){
     const [tableData, setTableData] = useState([])
 
     useEffect(() => {
-        axios.get(`${config.API_ROOT_PATH}/line/preview`)
+        apiGetLinesPreview()
         .then(response => setTableData(response.data))
         .catch(error => console.log("Error fetching data @BusLine.js ", error))
     }, [])
