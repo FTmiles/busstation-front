@@ -7,6 +7,7 @@ export default function LinePage(){
     const[data, setData] = useState({info:[], routes:[{stopsArr:[]}]});
     const[activeRouteIndexArr, setActiveRouteIndexArr] = useState([0]);
     const {lineId} = useParams();
+    const secondRowColor = "#dedede";
 
     useEffect(()=>{
         apiGetLineEager(lineId)
@@ -44,7 +45,7 @@ export default function LinePage(){
             </div>
             </div>
             <div className="row">
-                <div className="col-12 col-md-6 order-md-2 bg-primary">
+                <div className="col-12 col-md-6 order-md-2">
                 <table>
                     <thead>
                     </thead>
@@ -58,11 +59,11 @@ export default function LinePage(){
                 </table>
 
                 </div>
-                <div className="col-12 col-md-6 order-md-1 bg-secondary ">
+                <div className="col-12 col-md-6 order-md-1">
                     <h2>Route variations:</h2>  
-                    <ul className="list-group list-group-numbered">
+                    <ul className="list-group list-group-numbered route-selector ">
                         {data.routes.map((row, index)=>(
-                              <li className={`list-group-item my-cursor-pointer 
+                              <li className={`list-group-item my-cursor-pointer  list-group-item-light
                                 ${activeRouteIndexArr.includes(index) ? "active" : ""}`} 
                                 key={index}
                                 onClick={handleRoutesClick.bind(null,row.id)}>
@@ -72,8 +73,8 @@ export default function LinePage(){
                     </ul>
                 </div>
             </div>
-            <div className="row">
-                <div className="col bg-success">
+            <div className="row" style={{background:secondRowColor}}>
+                <div className="col ">
                     {activeRouteIndexArr.map(index =>   (
                         <BusStopTable key={index}  activeRoute={data.routes[index]} />    
                     )   )
@@ -85,9 +86,6 @@ export default function LinePage(){
             </div>
 
 
-            <div>single line bottoms up!<br/>
-              
-            </div>
         </main>
     )
 }

@@ -1,5 +1,3 @@
-import axios from "axios";
-import config from "config";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import BusStopTableEdit from "./BusStopTableEdit";
@@ -10,6 +8,7 @@ export default function LinePageEdit(){
     const[activeRouteIndexArr, setActiveRouteIndexArr] = useState([0]);
     const {lineId} = useParams();
     let typingDebounce = null;
+    const secondRowColor = "#dedede";
 
     
 
@@ -32,6 +31,11 @@ export default function LinePageEdit(){
         // })
     }, [])
     
+
+    const handleSubmit = () => {
+        
+    }
+
     const handleRoutesClick = (id) => {
         const index = data.routes.findIndex(el => id === el.id);
 
@@ -74,57 +78,66 @@ export default function LinePageEdit(){
     }
 
 
-    const handleAddStop = (routeIndex, i) => {
-        console.log("+1", routeIndex, i);
+    const handleAddStop = (routeIndex, i, counterEl) => {
+        console.log("+1", data, i);
         setData(og => {
             const newData = {...og}
             newData.routes[routeIndex].stopsArr.splice(i+1, 0, "")
             newData.routes[routeIndex].distanceMetersList.splice(i+1, 0, "")
+            counterEl.current.value = newData.routes[routeIndex].stopsArr.length;
             return newData
         })
     }
 
-    const handleRemoveStop = (routeIndex, i) => {
+    const handleRemoveStop = (routeIndex, i, counterEl) => {
         setData(og => {
             const newData = {...og}
             newData.routes[routeIndex].stopsArr.splice(i, 1)
             newData.routes[routeIndex].distanceMetersList.splice(i, 1)
+            counterEl.current.value = newData.routes[routeIndex].stopsArr.length;
             return newData
         })    }
 
     const handleStopCountChange = (newValue, index) => {
         console.log("hehe", newValue);
-        const lastDefinedIndex = data.routes[index].stopsArr.findLastIndex(stop=> stop)
-        const surplus = newValue - lastDefinedIndex + 1;
+        const lastDefinedIndex = data.routes[index].stopsArr.findLastIndex(stop=> stop.id)
+        console.log("last defined", lastDefinedIndex);
+        const surplus = newValue - lastDefinedIndex - 1;
         console.log("surplus", surplus)
 
-        if (surplus > 0)
+        if (surplus >= 0)
             setData(og => {
                 const newData = {...og};
-                // newData.routes[index].stopsArr.splice(0, lastDefinedIndex, )
-                newData.routes[index].stopsArr.splice(lastDefinedIndex, 999, ...Array(surplus).fill({}))
-                // newData.routes[index].stopsArr.push([...Array(surplus).fill(undefined)])
+
+                newData.routes[index].stopsArr.splice(lastDefinedIndex + 1)
+                newData.routes[index].stopsArr.splice(lastDefinedIndex +1,0 ,  ...Array(surplus).fill({}))
+
                 return newData
             })
-
     }
+
+   
 
     return(
         <main>
             <div className="d-flex flex-row justify-content-between align-items-center">
              <input className="h1" name="name" defaultValue={data.name}
                 onChange={e => handleChange(e.target.value, [], "name")} />
-            <div className="bg-secondary">
+            <div>
+
+            <Link to={`/admin-panel/lines/${lineId}`}
+                className="btn btn-secondary mx-2"
+            >Cancel</Link>
 
             <Link to={`/admin-panel/lines/${lineId}/edit`}
-             state={data}
+                state={data}
                 className="btn btn-success"
             >Save</Link>
 
             </div>
             </div>
             <div className="row">
-                <div className="col-12 col-md-6 order-md-2 bg-primary">
+                <div className="col-12 col-md-6 order-md-2">
                 <table>
                     <thead>
                     </thead>
@@ -141,11 +154,11 @@ export default function LinePageEdit(){
                 </table>
 
                 </div>
-                <div className="col-12 col-md-6 order-md-1 bg-secondary ">
+                <div className="col-12 col-md-6 order-md-1 ">
                     <h2>Route variations:</h2>  
                     <ul className="list-group list-group-numbered">
                         {data.routes.map((row, index)=>(
-                              <li className={`list-group-item my-cursor-pointer 
+                              <li className={`list-group-item my-cursor-pointer list-group-item-light
                                 ${activeRouteIndexArr.includes(index) ? "active" : ""}`} 
                                 key={index}
                                 onClick={handleRoutesClick.bind(null,row.id)}>
@@ -155,8 +168,8 @@ export default function LinePageEdit(){
                     </ul>
                 </div>
             </div>
-            <div className="row">
-                <div className="col bg-success">
+            <div className="row" style={{background: secondRowColor}}>
+                <div className="col">
                     {activeRouteIndexArr.map(index =>   (
                         <BusStopTableEdit 
                         key={index} 
@@ -175,10 +188,6 @@ export default function LinePageEdit(){
                 </div>
             </div>
 
-
-            <div>single line bottoms up!<br/>
-              
-            </div>
         </main>
     )
 }

@@ -99,3 +99,12 @@
 }
 
 /*------------*/
+
+.my-no-color-background {
+  background-color: transparent;
+}
+
+.my-no-color-background td, .my-no-color-background th  {
+  background-color: transparent;
+}
+

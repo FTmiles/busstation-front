@@ -38,7 +38,7 @@ export default function LineTableRow({ row, isEvenRow }) {
             {row.mainStops.join(", ")} 
             {row.extraStops && 
             <p className="mt-3">
-              <span className="text-secondary">*Some routes: </span> 
+              <span className="text-secondary">*Extra: </span> 
               {row.extraStops.join(", ")} 
             </p> }
           </td>
