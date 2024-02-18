@@ -4,7 +4,7 @@ import BusStopTable from "../BusStopTable";
 import { apiGetLineEager } from "services/user.service.js"
 
 export default function LinePage(){
-    const[data, setData] = useState({info:[], routes:[{stopsArr:[]}]});
+    const[data, setData] = useState();
     const[activeRouteIndexArr, setActiveRouteIndexArr] = useState([0]);
     const {lineId} = useParams();
     const secondRowColor = "#dedede";
@@ -13,6 +13,7 @@ export default function LinePage(){
         apiGetLineEager(lineId)
         .then(response => {
             setData(response.data);
+            console.log("twice her",response.data);
         })
     }, [])
 
@@ -30,7 +31,7 @@ export default function LinePage(){
             setActiveRouteIndexArr(og => og.filter(i => i != index));
 
     }
-
+    if (!data) return (<div>Loading...</div>)
     return(
         <main>
             <div className="d-flex flex-row justify-content-between align-items-center">

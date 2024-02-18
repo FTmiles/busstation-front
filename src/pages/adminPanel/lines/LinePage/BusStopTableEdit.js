@@ -13,9 +13,9 @@ export default function BusStopTableEdit({
   handleRemoveStop,
   handleAddStop,
   handleStopCountChange,
+  validationOn
 }) {
   const [allStops, setAllStops] = useState();
-
   const counter = useRef();
 
   const handleCreate = (newStopName, i) => {
@@ -31,7 +31,7 @@ export default function BusStopTableEdit({
     apiGetBusStopsAll().then((response) => setAllStops(response.data));
   }, []);
 
-
+  
 
 
   if (!activeRoute.stopsArr.length || !allStops ) return;
@@ -44,6 +44,7 @@ export default function BusStopTableEdit({
         <input
           defaultValue={activeRoute.routeNotes || "main"}
           name="routeNotes"
+          style={{ border: validationOn && !activeRoute.routeNotes? "red 3px dashed" : "" }}
           onChange={(e) =>
             handleChange(e.target.value, ["routes", index], "routeNotes")
           }
@@ -54,7 +55,7 @@ export default function BusStopTableEdit({
           min={activeRoute.stopsArr.findLastIndex((stop) => stop.id) + 1 || 1}
           defaultValue={activeRoute.stopsArr.length}
           className="float-end"
-          style={{ width: "3em" }}
+          style={{ width: "3em"}}
           onChange={(e) => handleStopCountChange(e.target.value, index)}
         />
       </caption>
@@ -69,7 +70,7 @@ export default function BusStopTableEdit({
           <tr key={i}>
                           {console.log(i)}
 
-            <td className="d-flex align-items-center">
+            <td className="d-flex align-items-center" style={{border: validationOn && !stop? "red 3px dashed" : ""}}>
               <FontAwesomeIcon
                 icon={faPlus}
                 onClick={() => {handleAddStop(index, i, counter)

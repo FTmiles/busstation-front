@@ -2,14 +2,15 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import BusStopTableEdit from "./BusStopTableEdit";
 import { useLocation } from 'react-router-dom';
+import { apiPostLineEager } from "services/user.service";
 
 export default function LinePageEdit(){
-    const[data, setData] = useState({info:[], routes:[{stopsArr:[]}], name:""});
+    const[data, setData] = useState();
     const[activeRouteIndexArr, setActiveRouteIndexArr] = useState([0]);
     const {lineId} = useParams();
     let typingDebounce = null;
     const secondRowColor = "#dedede";
-
+    const [validationOn, setValidationOn] = useState(false);
     
 
     const location = useLocation();
@@ -17,7 +18,7 @@ export default function LinePageEdit(){
     useEffect(() => {
         if (location.state)
             setData(location.state)
-
+        console.log("on your own", location.state);
     }, [])
 
     useEffect(()=>{
@@ -33,7 +34,26 @@ export default function LinePageEdit(){
     
 
     const handleSubmit = () => {
+        setValidationOn(true);
+        console.log("DATA", data);
+
+        //Validation --
+        if (!data.name) return
         
+        for (let el of data.info){
+            if (!el.value) return;
+        }
+
+        for ( let route of data.routes) {
+            for (let stopObj of route.stopsArr){
+                if (stopObj?.id == undefined) return;
+            }
+        }
+        //ends validation --
+        //persist to DB
+        console.log("FUCKING PASSED NIGGA");
+        apiPostLineEager(data);
+
     }
 
     const handleRoutesClick = (id) => {
@@ -117,12 +137,16 @@ export default function LinePageEdit(){
     }
 
    
-
+ if (!data) return(<div>Loading ...</div>);
     return(
         <main>
             <div className="d-flex flex-row justify-content-between align-items-center">
              <input className="h1" name="name" defaultValue={data.name}
-                onChange={e => handleChange(e.target.value, [], "name")} />
+                onChange={e => handleChange(e.target.value, [], "name")} 
+
+                style={{ border: validationOn && !data.name? "red 3px dashed" : "" }}
+                />
+
             <div>
 
             <Link to={`/admin-panel/lines/${lineId}`}
@@ -132,6 +156,7 @@ export default function LinePageEdit(){
             <Link to={`/admin-panel/lines/${lineId}/edit`}
                 state={data}
                 className="btn btn-success"
+                onClick={handleSubmit}
             >Save</Link>
 
             </div>
@@ -146,6 +171,7 @@ export default function LinePageEdit(){
                             <tr key={index}>
                                 <td>{row.key}</td><td>
                                     <input className="" name="value" defaultValue={row.value}
+                                    style={{ border: validationOn && !row.value? "red 3px dashed" : "" }}
                                     onChange={e => handleChange(e.target.value, ["info", index], "value")} />
                                     </td>
                             </tr>
@@ -179,6 +205,7 @@ export default function LinePageEdit(){
                         handleAddStop={handleAddStop}
                         handleRemoveStop={handleRemoveStop}
                         handleStopCountChange={handleStopCountChange}
+                        validationOn={validationOn}
                         />    
                     )   )
 
