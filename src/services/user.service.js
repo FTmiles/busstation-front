@@ -76,7 +76,11 @@ export const apiGetLineEager = (id) => {
 }
 
 export const apiPostLineEager = (data) => {
-  return axios.post(`${API_ROOT_PATH}/line/post-line-eager-dto`, data, {headers: authHeader()})
+  return axios.post(`${API_ROOT_PATH}/line/post-line-full-dto`, data, {headers: authHeader()})
+}
+
+export const apiGetLineFull = (id) => {
+  return axios.get(`${API_ROOT_PATH}/line/get-line-full?id=${id}`, {headers: authHeader()})
 }
 
 

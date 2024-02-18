@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import BusStopTable from "../BusStopTable";
-import { apiGetLineEager } from "services/user.service.js"
+import { apiGetLineFull } from "services/user.service.js"
+import { lineInfoLabel } from "utils/myUtils";
 
 export default function LinePage(){
     const[data, setData] = useState();
@@ -10,16 +11,13 @@ export default function LinePage(){
     const secondRowColor = "#dedede";
 
     useEffect(()=>{
-        apiGetLineEager(lineId)
+        apiGetLineFull(lineId)
         .then(response => {
             setData(response.data);
-            console.log("twice her",response.data);
+            console.log("JSON from BACK",response.data);
         })
     }, [])
 
-    useEffect(() => {
-        console.log("fuck", activeRouteIndexArr);
-    }, [activeRouteIndexArr])
     
 
     const handleRoutesClick = (id) => {
@@ -35,7 +33,7 @@ export default function LinePage(){
     return(
         <main>
             <div className="d-flex flex-row justify-content-between align-items-center">
-            <h1>{data.name}</h1>
+            <h1>{data.info.name}</h1>
             <div className="bg-secondary">
        
             <Link to={`/admin-panel/lines/${lineId}/edit`}
@@ -51,11 +49,12 @@ export default function LinePage(){
                     <thead>
                     </thead>
                     <tbody>
-                        {data.info.map((row, index)=>(
+                        {Object.keys(lineInfoLabel).map((infoKey, index) => (
                             <tr key={index}>
-                                <td>{row.key}</td><td>{row.value}</td>
-                            </tr>
+                              <td>{lineInfoLabel[infoKey]}</td><td>{data.info[infoKey]}</td>
+                            </tr>                 
                         ))}
+                        
                     </tbody>
                 </table>
 

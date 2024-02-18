@@ -32,3 +32,14 @@ export function hasEmptyFields(obj, exception) {
     // If no null, undefined, or empty string value is found, return false
     return false;
   }
+
+
+  export const lineInfoLabel = {
+    routeStart: "From",
+    routeEnd: "To",
+    via: "Via",
+    operator: "Operator",
+    anykStationPlatform: "Anyksciu AS platform",
+    price: "Price",
+    routeType: "Route type"
+  }
