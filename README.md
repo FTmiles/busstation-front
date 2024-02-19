@@ -18,4 +18,4 @@ Features
 
 
 The back-end can be found at
-https://github.com/FTmiles/busstation-front
+https://github.com/FTmiles/busstation-back
