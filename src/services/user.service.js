@@ -7,21 +7,6 @@ const API_ROOT_PATH = "http://192.168.2.129:8080"
 
 const API_URL = "";
 
-const getPublicContent = () => {
-  return axios.get(API_URL + "all");
-};
-
-const getUserBoard = () => {
-  return axios.get(API_URL + "user", { headers: authHeader() });
-};
-
-const getModeratorBoard = () => {
-  return axios.get(API_URL + "mod", { headers: authHeader() });
-};
-
-const getAdminBoard = () => {
-  return axios.get(API_URL + "admin", { headers: authHeader() });
-};
 
 //Public APIs
 export const getHomeScheduleItems = (date) => {

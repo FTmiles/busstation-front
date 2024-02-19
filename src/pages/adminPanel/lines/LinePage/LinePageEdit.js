@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import BusStopTableEdit from "./BusStopTableEdit";
 import { useLocation } from 'react-router-dom';
 import { apiPostLineEager } from "services/user.service";
@@ -13,7 +13,7 @@ export default function LinePageEdit(){
     let typingDebounce = null;
     const secondRowColor = "#dedede";
     const [validationOn, setValidationOn] = useState(false);
-
+    const navigate = useNavigate();
 
     const location = useLocation();
 
@@ -53,6 +53,7 @@ export default function LinePageEdit(){
         //persist to DB
         console.log("validation passed");
         apiPostLineEager(data)
+        navigate(`/admin-panel/lines/${lineId}`)
     }
 
     const handleRoutesClick = (id) => {
@@ -152,12 +153,9 @@ export default function LinePageEdit(){
                 className="btn btn-secondary mx-2"
             >Cancel</Link>
 
-            <Link to={`/admin-panel/lines/${lineId}`}
-                // state={data}
-                className="btn btn-success"
-                onClick={handleSubmit}
-            >Save</Link>
-
+            <button className="btn btn-success"
+            onClick={handleSubmit}
+            >Save</button>
             </div>
             </div>
             <div className="row">
