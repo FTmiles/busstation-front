@@ -108,3 +108,8 @@
   background-color: transparent;
 }
 
+/*----------------*/
+.route-variations .active {
+  background: #495057;
+  color: white;
+}

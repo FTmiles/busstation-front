@@ -38,11 +38,11 @@ export default function BusStopTableEdit({
   return (
     <table
       className="table d-inline-block ms-4 caption-top my-no-color-background"
-      style={{ width: "auto" }}
+      style={{ width: "auto"}}
     >
       <caption>
         <input
-          defaultValue={activeRoute.routeNotes || "main"}
+          defaultValue={activeRoute.routeNotes }
           name="routeNotes"
           style={{ border: validationOn && !activeRoute.routeNotes? "red 3px dashed" : "" }}
           onChange={(e) =>
@@ -70,7 +70,7 @@ export default function BusStopTableEdit({
           <tr key={i}>
                           {console.log(i)}
 
-            <td className="d-flex align-items-center" style={{border: validationOn && !stop? "red 3px dashed" : ""}}>
+            <td className="d-flex align-items-center" style={{border: validationOn && !stop.name? "red 3px dashed" : "", minWidth:"200px"}}>
               <FontAwesomeIcon
                 icon={faPlus}
                 onClick={() => {handleAddStop(index, i, counter)

@@ -4,7 +4,10 @@ import BusStopTableEdit from "./BusStopTableEdit";
 import { useLocation } from 'react-router-dom';
 import { apiPostLineEager } from "services/user.service";
 import { lineInfoLabel } from "utils/myUtils";
+import { faTrashCan, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+let nextId = -1000;
 
 export default function LinePageEdit(){
     const[data, setData] = useState();
@@ -14,13 +17,11 @@ export default function LinePageEdit(){
     const secondRowColor = "#dedede";
     const [validationOn, setValidationOn] = useState(false);
     const navigate = useNavigate();
-
     const location = useLocation();
 
     useEffect(() => {
         if (location.state)
             setData(location.state)
-        console.log("on your own", location.state);
     }, [])
 
     useEffect(()=>{
@@ -45,6 +46,8 @@ export default function LinePageEdit(){
         }
 
         for ( let route of data.routes) {
+                if (!route.routeNotes) return;
+
             for (let stopObj of route.stopsArr){
                 if (stopObj?.id == undefined) return;
             }
@@ -58,7 +61,7 @@ export default function LinePageEdit(){
 
     const handleRoutesClick = (id) => {
         const index = data.routes.findIndex(el => id === el.id);
-
+        console.log(data);
         if (!activeRouteIndexArr.includes(index))
             setActiveRouteIndexArr(og => [...og, index]);
         else 
@@ -136,6 +139,43 @@ export default function LinePageEdit(){
             })
     }
 
+    const handleDeleteRoute = (route, index) => {
+        setData(og => {
+            const newData = {...og};
+            newData.routes = newData.routes.filter(x=> x.id !== route.id);
+            return newData;
+        })
+
+        //update activeRouteIndex
+        let newActiveInd = [];
+        activeRouteIndexArr.forEach(i=>{
+            if (index > i)
+                newActiveInd.push(i);
+            else if (index < i)
+                newActiveInd.push(i-1);
+            //if equals, then do nothing > gets removed
+        })
+        setActiveRouteIndexArr(newActiveInd)
+    }
+
+    const handleNewRoute = () => {
+        const emptyObject = {
+            "id": nextId--,
+            "stopsArr": [{}],
+            "distanceMetersList": [],
+            "routeNotes": ""
+        };
+        const routesLength = data.routes.length;
+        setData(og => {
+            const newData = {...og};
+            newData.routes.push(emptyObject)
+            return newData;
+        })
+
+        setActiveRouteIndexArr(og=>{
+            return [...og, routesLength]
+        })
+    }
    
  if (!data) return(<div>Loading ...</div>);
     return(
@@ -167,11 +207,20 @@ export default function LinePageEdit(){
                     {Object.keys(lineInfoLabel).map((infoKey, index) => (
                             <tr key={index}>
                               <td>{lineInfoLabel[infoKey]}</td>
-                              <td>
+                              <td> {infoKey === "routeType" ? 
+                                <select className="form-select" aria-label="Default select example"
+                                style={{ border: validationOn && !data.info[infoKey]? "red 3px dashed" : "" }}
+                                onChange={e => handleChange(e.target.value, ["info"], infoKey)}
+                                defaultValue={data.info[infoKey]}>
+                                {data.routeTypeOptions.map((option, optionIndex)=>
+                                    <option value={option} key={optionIndex}>{option}</option>
+                                )}
+                              </select> : 
                               <input className="" name="value" defaultValue={data.info[infoKey]}
-                                    style={{ border: validationOn && !data.info[infoKey]? "red 3px dashed" : "" }}
-                                    onChange={e => handleChange(e.target.value, ["info"], infoKey)} />
-                                {}</td>
+                              style={{ border: validationOn && !data.info[infoKey]? "red 3px dashed" : "" }}
+                              onChange={e => handleChange(e.target.value, ["info"], infoKey)} />                              
+                            }
+                                </td>
                             </tr>                 
                         ))}
 
@@ -181,15 +230,29 @@ export default function LinePageEdit(){
                 </div>
                 <div className="col-12 col-md-6 order-md-1 ">
                     <h2>Route variations:</h2>  
-                    <ul className="list-group list-group-numbered">
+                    <ul className="list-group route-variations">
+                        {/*  list-group-numbered */}
                         {data.routes.map((row, index)=>(
-                              <li className={`list-group-item my-cursor-pointer list-group-item-light
-                                ${activeRouteIndexArr.includes(index) ? "active" : ""}`} 
-                                key={index}
-                                onClick={handleRoutesClick.bind(null,row.id)}>
-                                {row.routeNotes || "main route"}
+                              <li className={`list-group-item list-group-item-light
+                                d-flex justify-content-around gap-3 p-0 align-items-center`} 
+                                style={{background: 
+                                    validationOn && (!row.routeNotes || row.stopsArr.some(x => !x.name)) ?
+                                    "#ffabab" : ""}}
+                                key={index}>
+                                    <span className={`my-cursor-pointer rounded-3 p-2
+                                        ${activeRouteIndexArr.includes(index) ? "active" : ""}`} 
+                                        onClick={handleRoutesClick.bind(null,row.id)}
+                                        style={{ padding:0, margin:0, flexGrow:5}}>
+                                            {index+1}. {row.routeNotes }
+                                    </span>
+                                
+                                    <FontAwesomeIcon className='btn' icon={faTrashCan} onClick={()=>handleDeleteRoute(row, index)} />
+
                               </li>
                         ))}
+                        <li className="list-group-item list-group-item-light text-center m-0 p-0 border-0">
+                            <FontAwesomeIcon className='btn px-4 ' icon={faPlus} onClick={()=>handleNewRoute()} />
+                        </li>
                     </ul>
                 </div>
             </div>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import BusStopTable from "../BusStopTable";
-import { apiGetLineFull } from "services/user.service.js"
+import { apiGetLineFull, apiDelLine } from "services/user.service.js"
 import { lineInfoLabel } from "utils/myUtils";
 
 export default function LinePage(){
@@ -27,19 +27,29 @@ export default function LinePage(){
             setActiveRouteIndexArr(og => [...og, index]);
         else 
             setActiveRouteIndexArr(og => og.filter(i => i != index));
-
     }
+
+    const handleDeleteLine = () => {
+        apiDelLine(lineId)
+    }
+
+
     if (!data) return (<div>Loading...</div>)
     return(
         <main>
             <div className="d-flex flex-row justify-content-between align-items-center">
             <h1>{data.info.name}</h1>
-            <div className="bg-secondary">
+            <div className="">
        
             <Link to={`/admin-panel/lines/${lineId}/edit`}
              state={data}
                 className="btn btn-primary"
             >Edit</Link>
+
+            <Link to={`/admin-panel/lines/`}
+                className="btn btn-danger mx-2"
+                onClick={handleDeleteLine}
+            >Del {data.info.name}</Link>
 
             </div>
             </div>

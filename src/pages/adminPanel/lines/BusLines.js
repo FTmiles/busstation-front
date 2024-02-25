@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react"
 import LineTableRow from "./LineTableRow"
 import { apiGetLinesPreview } from "services/user.service.js"
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 
 export default function BusLine(){
@@ -12,7 +14,9 @@ export default function BusLine(){
         .catch(error => console.log("Error fetching data @BusLine.js ", error))
     }, [])
 
-
+    const handleAddLine = () => {
+        console.log(tableData);
+    }
 
     return (
         <table className="table ">
@@ -25,7 +29,10 @@ export default function BusLine(){
                 {tableData.map((row, i)=>(
                     <LineTableRow row={row} key={row.id} isEvenRow={i%2 === 0} />
                 ))}
-            </tbody>
+                <tr><td colSpan={4} className="text-center m-0 p-0 border-0"> 
+                    <FontAwesomeIcon className='btn px-4 ' icon={faPlus} onClick={handleAddLine} />
+                    </td></tr>
+              </tbody>
         </table>
     )
 }

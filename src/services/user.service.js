@@ -68,4 +68,8 @@ export const apiGetLineFull = (id) => {
   return axios.get(`${API_ROOT_PATH}/line/get-line-full?id=${id}`, {headers: authHeader()})
 }
 
+export const apiDelLine = (id) => {
+  axios.delete(`${API_ROOT_PATH}/line/delete/${id}`, {headers: authHeader()})
+}
+
 
