@@ -12,7 +12,8 @@ import BusLines from "pages/adminPanel/lines/BusLines";
 import LinePage from "pages/adminPanel/lines/LinePage/LinePage";
 import LinePageEdit from "pages/adminPanel/lines/LinePage/LinePageEdit";
 import Login from "authComponents/Login";
-
+import SchLines from "pages/adminPanel/schedules/SchLines";
+import SchMain from "pages/adminPanel/schedules/SchMain";
 
 function App() {
   return (
@@ -35,6 +36,9 @@ function App() {
              <Route path="lines/:lineId" element={<LinePage />} />
              <Route path="lines/:lineId/edit" element={<LinePageEdit />} />
              <Route path="lines/new" element={<LinePageEdit />} />
+             
+             <Route path="schedules" element={<SchLines />} />
+             <Route path="schedules/:lineId" element={<SchMain />} />
           </Route>
           <Route path="/backdoor" element={<Login />} />
 

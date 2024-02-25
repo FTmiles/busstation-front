@@ -34,7 +34,7 @@ export default function BusStopTableEdit({
   
 
 
-  if (!activeRoute.stopsArr.length || !allStops ) return;
+  if (!activeRoute?.stopsArr.length || !allStops ) return;
   return (
     <table
       className="table d-inline-block ms-4 caption-top my-no-color-background"

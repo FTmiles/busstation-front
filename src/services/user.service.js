@@ -69,7 +69,13 @@ export const apiGetLineFull = (id) => {
 }
 
 export const apiDelLine = (id) => {
-  axios.delete(`${API_ROOT_PATH}/line/delete/${id}`, {headers: authHeader()})
+  return axios.delete(`${API_ROOT_PATH}/line/delete/${id}`, {headers: authHeader()})
 }
 
+export const apiGetEmptyLine = () => {
+  return axios.get(`${API_ROOT_PATH}/line/get-empty`, {headers: authHeader()})
+}
 
+export const apiGetSchedules = (lineId) => {
+  return axios.get(`${API_ROOT_PATH}/scheduleItem/schedule-by-line?lineId=${lineId}`, {headers: authHeader()})
+}

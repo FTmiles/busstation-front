@@ -3,7 +3,7 @@ import LineTableRow from "./LineTableRow"
 import { apiGetLinesPreview } from "services/user.service.js"
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
+import { Link } from "react-router-dom";
 
 export default function BusLine(){
     const [tableData, setTableData] = useState([])
@@ -30,7 +30,13 @@ export default function BusLine(){
                     <LineTableRow row={row} key={row.id} isEvenRow={i%2 === 0} />
                 ))}
                 <tr><td colSpan={4} className="text-center m-0 p-0 border-0"> 
-                    <FontAwesomeIcon className='btn px-4 ' icon={faPlus} onClick={handleAddLine} />
+                    
+
+                    <Link to={`/admin-panel/lines/new`}
+                          
+                    ><FontAwesomeIcon className='btn px-4 ' icon={faPlus} onClick={handleAddLine} /></Link>
+
+
                     </td></tr>
               </tbody>
         </table>

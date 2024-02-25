@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import BusStopTable from "../BusStopTable";
 import { apiGetLineFull, apiDelLine } from "services/user.service.js"
 import { lineInfoLabel } from "utils/myUtils";
@@ -9,6 +9,7 @@ export default function LinePage(){
     const[activeRouteIndexArr, setActiveRouteIndexArr] = useState([0]);
     const {lineId} = useParams();
     const secondRowColor = "#dedede";
+    const navigate = useNavigate();
 
     useEffect(()=>{
         apiGetLineFull(lineId)
@@ -30,7 +31,9 @@ export default function LinePage(){
     }
 
     const handleDeleteLine = () => {
-        apiDelLine(lineId)
+        apiDelLine(lineId).then(
+            () =>  navigate(`/admin-panel/lines/`)
+        )
     }
 
 
@@ -46,10 +49,10 @@ export default function LinePage(){
                 className="btn btn-primary"
             >Edit</Link>
 
-            <Link to={`/admin-panel/lines/`}
+            <button
                 className="btn btn-danger mx-2"
                 onClick={handleDeleteLine}
-            >Del {data.info.name}</Link>
+            >Del {data.info.name}</button>
 
             </div>
             </div>

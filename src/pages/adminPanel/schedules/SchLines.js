@@ -1,13 +1,13 @@
-import axios from "axios"
 import { useEffect, useState } from "react"
-import config from "config"
-import LineTableRow from "./LineTableRow"
+import LineTableRow from "../lines/LineTableRow";
+import { apiGetLinesPreview } from "services/user.service.js"
 
-export default function BusLine(){
+
+export default function SchLines(){
     const [tableData, setTableData] = useState([])
 
     useEffect(() => {
-        axios.get(`${config.API_ROOT_PATH}/line/preview`)
+        apiGetLinesPreview()
         .then(response => setTableData(response.data))
         .catch(error => console.log("Error fetching data @BusLine.js ", error))
     }, [])
@@ -25,7 +25,13 @@ export default function BusLine(){
                 {tableData.map((row, i)=>(
                     <LineTableRow row={row} key={row.id} isEvenRow={i%2 === 0} />
                 ))}
-            </tbody>
+
+              </tbody>
         </table>
     )
+
 }
+
+
+
+

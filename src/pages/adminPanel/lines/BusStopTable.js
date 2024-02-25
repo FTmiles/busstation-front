@@ -3,6 +3,7 @@
 export default function BusStopTable({activeRoute, secondRowColor}){
 
     console.log("from inners", activeRoute);
+    if (!activeRoute) return "The line has no routes yet";
     return (
         <table className="table d-inline-block ms-4 caption-top my-no-color-background" style={{width:"auto"}}>
           <caption>{activeRoute.routeNotes || "main"}</caption>

@@ -35,11 +35,11 @@ export default function LineTableRow({ row, isEvenRow }) {
       {isExpanded ? (
         <tr>
           <td className="pb-5 table-secondary" colSpan={5}>
-            {row.mainStops.join(", ")} 
+            {row.mainStops?.join(", ")} 
             {row.extraStops && 
             <p className="mt-3">
               <span className="text-secondary">*Extra: </span> 
-              {row.extraStops.join(", ")} 
+              {row.extraStops?.join(", ")} 
             </p> }
           </td>
         </tr>

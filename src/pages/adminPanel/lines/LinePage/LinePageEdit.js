@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import BusStopTableEdit from "./BusStopTableEdit";
 import { useLocation } from 'react-router-dom';
-import { apiPostLineEager } from "services/user.service";
+import { apiPostLineEager, apiGetEmptyLine } from "services/user.service";
 import { lineInfoLabel } from "utils/myUtils";
 import { faTrashCan, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -11,7 +11,7 @@ let nextId = -1000;
 
 export default function LinePageEdit(){
     const[data, setData] = useState();
-    const[activeRouteIndexArr, setActiveRouteIndexArr] = useState([0]);
+    const[activeRouteIndexArr, setActiveRouteIndexArr] = useState([]);
     const {lineId} = useParams();
     let typingDebounce = null;
     const secondRowColor = "#dedede";
@@ -20,8 +20,14 @@ export default function LinePageEdit(){
     const location = useLocation();
 
     useEffect(() => {
-        if (location.state)
+        if (location.state) {
             setData(location.state)
+            if (location.state.routes.length > 0)
+                setActiveRouteIndexArr([0])
+        }
+            
+        else 
+        apiGetEmptyLine().then(response => setData(response.data))
     }, [])
 
     useEffect(()=>{
@@ -42,7 +48,7 @@ export default function LinePageEdit(){
 
         //Validation --
         for (let key of Object.keys(data.info)) {
-            if (!data.info[key]) return
+            if (key !== "id" && !data.info[key]) return
         }
 
         for ( let route of data.routes) {
@@ -56,7 +62,8 @@ export default function LinePageEdit(){
         //persist to DB
         console.log("validation passed");
         apiPostLineEager(data)
-        navigate(`/admin-panel/lines/${lineId}`)
+            .then(response => navigate(`/admin-panel/lines/${response.data || ""}`))
+        
     }
 
     const handleRoutesClick = (id) => {
@@ -212,6 +219,7 @@ export default function LinePageEdit(){
                                 style={{ border: validationOn && !data.info[infoKey]? "red 3px dashed" : "" }}
                                 onChange={e => handleChange(e.target.value, ["info"], infoKey)}
                                 defaultValue={data.info[infoKey]}>
+                                    {data.info[infoKey] ?? <option value=""></option>}
                                 {data.routeTypeOptions.map((option, optionIndex)=>
                                     <option value={option} key={optionIndex}>{option}</option>
                                 )}
