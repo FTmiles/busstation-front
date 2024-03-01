@@ -18,6 +18,7 @@ export default function LinePageEdit(){
     const [validationOn, setValidationOn] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
+    const [showScheduleLinks, setShowScheduleLinks] = useState(false);
 
     useEffect(() => {
         if (location.state) {
@@ -252,10 +253,13 @@ export default function LinePageEdit(){
                                         onClick={handleRoutesClick.bind(null,row.id)}
                                         style={{ padding:0, margin:0, flexGrow:5}}>
                                             {index+1}. {row.routeNotes }
+                                            {/* if is used by schedules, give links */}
+                                            { showScheduleLinks && data.routeUsage[index]?.map(x=> <Link style={{fontSize: "0.7rem"}} className="btn btn-dark btn-sm py-0 px-1 mx-1" to={`/admin-panel/schedules/${x}`}>{x}</Link>   )}
                                     </span>
-                                
-                                    <FontAwesomeIcon className='btn' icon={faTrashCan} onClick={()=>handleDeleteRoute(row, index)} />
-
+                                {data.routeUsage[index] && data.routeUsage[index].length !== 0 ? 
+                                 <button className="btn"  onClick={()=>setShowScheduleLinks(og=> !og)}>{data.routeUsage[index].length} </button>
+                                : 
+                                <FontAwesomeIcon className='btn' icon={faTrashCan} onClick={()=>handleDeleteRoute(row, index)} />}
                               </li>
                         ))}
                         <li className="list-group-item list-group-item-light text-center m-0 p-0 border-0">

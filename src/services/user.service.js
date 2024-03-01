@@ -76,6 +76,19 @@ export const apiGetEmptyLine = () => {
   return axios.get(`${API_ROOT_PATH}/line/get-empty`, {headers: authHeader()})
 }
 
+//Schedules
+
 export const apiGetSchedules = (lineId) => {
   return axios.get(`${API_ROOT_PATH}/scheduleItem/schedule-by-line?lineId=${lineId}`, {headers: authHeader()})
+}
+
+//not needed anymore, delete on production
+// export const apiGetScheduleListEmpty = () => {
+//   return axios.get(`${API_ROOT_PATH}/scheduleItem/schedule-empty`, {headers: authHeader()})
+// }
+
+//Routes
+
+export const apiGetRoutesByLine = (lineId) => {
+  return axios.get(`${API_ROOT_PATH}/route/byline/${lineId}`, {headers: authHeader()})
 }

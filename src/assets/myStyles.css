@@ -89,6 +89,13 @@
     cursor: pointer;
 }
 
+.my-active-scale-down:active {
+    transform: scale(0.95); /* Scale down the link */
+}
+
+.my-active-shadow {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.8); /* Subtle box shadow */
+}
 
 
 /*=========Moves down by 50% of one table row=========*/
@@ -113,3 +120,4 @@
   background: #495057;
   color: white;
 }
+

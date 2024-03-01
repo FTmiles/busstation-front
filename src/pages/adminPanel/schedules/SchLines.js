@@ -15,7 +15,7 @@ export default function SchLines(){
 
 
     return (
-        <table className="table ">
+        <table className="table">
             <thead>
                 <tr>
                     <th>Name</th><th>From</th><th>To</th><th className="d-none d-md-table-cell">Via</th><th>Actions</th>
