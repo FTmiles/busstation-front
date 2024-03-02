@@ -1,6 +1,9 @@
 import TimeInput from "./TimeInput";
+import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-export default function Timetable({schedule, selectedSchedule, className, routes, handleRouteChange, handleReverseStops, handleChange, staticData}){
+
+export default function Timetable({schedule, selectedSchedule, className, routes, handleRouteChange, handleReverseStops, handleChange, staticData, handleDeleteTrip}){
     
     const timeConvert = (string) => {
         if (!string) return "";
@@ -28,10 +31,11 @@ export default function Timetable({schedule, selectedSchedule, className, routes
 
     // if (!routes || !schedule) return <div>loading</div>;
     return (
-        <div  className={className}>
+        // <div  className={className}>
+        <>
         { //this trip.id is GOOD unique
             schedule.trips.map((trip, index)=> (
-                <table className="caption-top" key={trip.id}>
+                <table className="caption-top  d-inline-block" key={trip.id}>
 {/* -----------CAPTION-------------------------------------- */}
                     <caption>  
                         <div className="d-flex justify-content-between">
@@ -90,9 +94,16 @@ export default function Timetable({schedule, selectedSchedule, className, routes
                             ))
                         }
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            <td  className="pt-4 text-center" colSpan="2">
+                            <FontAwesomeIcon className='btn btn-sm' icon={faTrashCan}  onClick={()=>handleDeleteTrip(trip)}  />
+                            </td>
+                        </tr>
+                    </tfoot>
                 </table>
             ))
         }
-        </div>
+        </>
     )
 }

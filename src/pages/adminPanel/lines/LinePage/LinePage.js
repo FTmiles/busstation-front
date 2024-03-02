@@ -43,7 +43,8 @@ export default function LinePage(){
             <div className="d-flex flex-row justify-content-between align-items-center">
             <h1>{data.info.name}</h1>
             <div className="">
-       
+            <Link to={`/admin-panel/schedules/${lineId}`} className="btn btn-secondary mx-2">Go to Schedules</Link>
+
             <Link to={`/admin-panel/lines/${lineId}/edit`}
              state={data}
                 className="btn btn-primary"

@@ -6,6 +6,7 @@ import { apiPostLineEager, apiGetEmptyLine } from "services/user.service";
 import { lineInfoLabel } from "utils/myUtils";
 import { faTrashCan, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { logDOM } from "@testing-library/react";
 
 let nextId = -1000;
 
@@ -212,6 +213,7 @@ export default function LinePageEdit(){
                     <thead>
                     </thead>
                     <tbody>
+                        {console.log(Object.keys(lineInfoLabel))}
                     {Object.keys(lineInfoLabel).map((infoKey, index) => (
                             <tr key={index}>
                               <td>{lineInfoLabel[infoKey]}</td>

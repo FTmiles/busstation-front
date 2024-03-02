@@ -19,14 +19,15 @@ export default function SchedulePickTable({data, className, handleNewSchedule, s
     }
 
         const daysOfWeek = (row) => {
+            const week = [["MONDAY", "M"], ["TUESDAY", "T"], ["WEDNESDAY", "W"], ["THURSDAY", "T"], ["FRIDAY", "F"], ["SATURDAY", "S"], ["SUNDAY", "S"]];
             let days = <div className='d-flex justify-content-between'> 
-            <span style={{fontSize:"0.8rem"}} className={`rounded-1  ${row.runsOnWeekly.includes("MONDAY")? "bg-dark" : "bg-secondary"} text-white p-1`}>M</span>    
-            <span style={{fontSize:"0.8rem"}} className={`rounded-1  ${row.runsOnWeekly.includes("TUESDAY") ? "bg-dark" : "bg-secondary"} text-white p-1`}>T</span>    
-            <span style={{fontSize:"0.8rem"}} className={`rounded-1  ${row.runsOnWeekly.includes("WEDNESDAY") ? "bg-dark" : "bg-secondary"} text-white p-1`}>W</span>    
-            <span style={{fontSize:"0.8rem"}} className={`rounded-1  ${row.runsOnWeekly.includes("THURSDAY") ? "bg-dark" : "bg-secondary"} text-white p-1`}>T</span>    
-            <span style={{fontSize:"0.8rem"}} className={`rounded-1  ${row.runsOnWeekly.includes("FRIDAY") ? "bg-dark" : "bg-secondary"} text-white p-1`}>F</span>    
-            <span style={{fontSize:"0.8rem"}} className={`rounded-1  ${row.runsOnWeekly.includes("SATURDAY") ? "bg-dark" : "bg-secondary"} text-white p-1`}>S</span>    
-            <span style={{fontSize:"0.8rem"}} className={`rounded-1  ${row.runsOnWeekly.includes("SUNDAY") ? "bg-dark" : "bg-secondary"} text-white p-1`}>S</span>    
+            {
+                week.map((day, i) => (
+                    <span style={{fontSize:"0.8rem"}} key={i}
+                    className={`rounded-1  ${row.runsOnWeekly.includes(day[0])? "bg-dark" : "my-schedule-picker-faded"} text-white p-1`}>{day[1]}</span>        
+                    ))
+            }            
+ 
             
             </div>
             return days;
@@ -34,35 +35,26 @@ export default function SchedulePickTable({data, className, handleNewSchedule, s
 
 
     return (
-        <div className={className}>
-            <table className="table" style={{width:"auto"}}>
-                <thead>
-                    <tr>
-                    <th>Schedule</th>
-                    </tr>
-                </thead>
-                <tbody>
+
+        <div className={`d-flex flex-wrap column-gap-3 align-items-start ${className} `} style={{maxWidth:"780px"}}> 
                     {
                         data.length == 0 
                         ? 
-                        <tr><td>This line has no schedules yet, create new...</td></tr>
+                        <div>This line has no schedules yet, create new...</div>
                         :
                         data.map((row, index) => (
-                            <tr className={index === selectedSchedule ? "my-active-shadow" : ""} key={row.id} onClick={()=>handleClickOpen(index)}>
-                            <td><div className="my-cursor-pointer my-active-scale-down">
-                                {daysOfWeek(row)}<div className='d-flex gap-3'>{row.trips.map(t=>generateName(t))}</div>
-                                </div></td>
-                            </tr>
+                            <div className={`${index === selectedSchedule ? "bg-primary my-active" : ""} p-1`} 
+                                key={row.id} onClick={()=>handleClickOpen(index)}>
+                            <div className="my-cursor-pointer my-active-scale-down d-flex gap-1">
+                                {daysOfWeek(row)}{row.trips.map(t=>generateName(t))}
+                            </div>
+                            </div>
                             ))
                     }
-                    <tr>
-                        <td className='text-center'>
+                        <div>
                         <FontAwesomeIcon className='btn ' icon={faPlus} onClick={handleNewSchedule}
                         />
-                        </td>
-                    </tr>
-                    </tbody>
-            </table>
-        </div>
+                        </div>
+        </div>  
     )
 }

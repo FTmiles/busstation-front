@@ -1,5 +1,5 @@
 
-export default function Constraints({ schedule}){
+export default function Constraints({schedule, handleChange}){
 
     const weekDays = [
         { value: "MONDAY", label: "Monday" },
@@ -12,19 +12,25 @@ export default function Constraints({ schedule}){
     ];
 
     return(
-        <div className="mt-4">
+        <div className="mt-4 border border-grey bg-secondary p-3">
             <div className="d-flex gap-4">
                 <p>Runs on public holidays:</p>
                 <div className="form-check">
-                    <input className="form-check-input" type="radio" name="runsOnHolidays" id="flexRadioDefault1" />
+                    {console.log("fucccc", schedule.runsOnPublicHolidays)}
+                    <input className="form-check-input" type="radio" checked={schedule.runsOnPublicHolidays === false}
+                        name="runsOnHolidays" id="flexRadioDefault1" value={false}  
+                        onChange={(e) => handleChange(e.target.checked, [] , "runsOnPublicHolidays")} />
+
                     <label className="form-check-label" htmlFor="flexRadioDefault1">
-                        Yes
+                        No
                     </label>
                     </div>
                     <div className="form-check">
-                    <input className="form-check-input" type="radio" name="runsOnHolidays" id="flexRadioDefault2"   />
+                    <input className="form-check-input" type="radio" checked={schedule.runsOnPublicHolidays === true}
+                        name="runsOnHolidays" id="flexRadioDefault2" value={true} 
+                        onChange={(e) => handleChange(e.target.checked, [] , "runsOnPublicHolidays")} />
                     <label className="form-check-label" htmlFor="flexRadioDefault2">
-                        No
+                        Yes
                     </label>
                 </div>
             </div>

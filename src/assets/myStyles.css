@@ -93,6 +93,7 @@
     transform: scale(0.95); /* Scale down the link */
 }
 
+/*not used anymore on OG planned page*/
 .my-active-shadow {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.8); /* Subtle box shadow */
 }
@@ -121,3 +122,13 @@
   color: white;
 }
 
+/* schedules > schedulePickTable*/
+.my-schedule-picker-faded {
+  background: #a8a8a8;
+}
+
+
+.my-active .my-schedule-picker-faded {
+  background: #c9e4ff;
+  color: black!important;
+}

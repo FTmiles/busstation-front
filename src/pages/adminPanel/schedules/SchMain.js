@@ -36,12 +36,13 @@ export default function SchMain(){
 const logDataFunk = () => {
     console.log("data", data);
     console.log("routes", routes);
-    console.log("staticData.emptySchedule", staticData.emptySchedule)
+    console.log("staticData.emptySchedule", staticData)
 }
 
 const handleRouteChange = (newRouteId, tripIndex) => {
     setData(og => {
         const newData = [...og];
+
         newData[selectedSchedule].trips[tripIndex].routeId = newRouteId;
         console.log("new data man", newData);
         return newData;
@@ -129,9 +130,6 @@ const handleSubmit = () => {
 
 }
 
-const validationFailedAlert = () => {
-
-}
 
 const isAllDataValid = (data) => {
     //each schedule
@@ -170,6 +168,31 @@ function evenOutArrays(arr1, arr2) {
     return arr2;
 }
 
+const handleDeleteTrip = (delTrip) => {
+    setData(og => {
+        const dataCopy = JSON.parse(JSON.stringify(data))
+        dataCopy[selectedSchedule].trips = dataCopy[selectedSchedule].trips
+                                            .filter(trip => trip.id !== delTrip.id)
+        return dataCopy;
+    })
+}
+
+const handleAddTrip = () => {
+    setData(og => {
+        const dataCopy = JSON.parse(JSON.stringify(data))
+        const id = newId--;
+
+        const emptyTrip = staticData.emptySchedule.trips[0];
+        emptyTrip.id = id;
+        emptyTrip.routeId = routes[0].id;        
+        
+        
+        dataCopy[selectedSchedule].trips
+            .push(emptyTrip)
+
+        return dataCopy;
+    })
+}
 
     //data loading
     if (!data || !routes) return <main>loading...</main>;
@@ -184,7 +207,7 @@ function evenOutArrays(arr1, arr2) {
 
     //all good 
     return(
-        <main className="row align-items-start" onClick={logDataFunk}>
+        <main className="row align-items-start pt-3 pb-3" onClick={logDataFunk}>
               {
                 showValidationFailedMsg &&
                     <div className="alert alert-danger " role="alert">
@@ -192,31 +215,43 @@ function evenOutArrays(arr1, arr2) {
                     </div>
                }
 
+            
+            <div className="d-flex flex-wrap gap-4 mb-5">
+                <SchedulePickTable data={data} className="  " 
+                    handleNewSchedule={handleNewSchedule} routes={routes} handleClickOpen={handleClickOpen} 
+                    selectedSchedule={selectedSchedule} />                
 
-            <SchedulePickTable data={data} className="col-md-4" 
-            handleNewSchedule={handleNewSchedule} routes={routes} handleClickOpen={handleClickOpen} 
-            selectedSchedule={selectedSchedule} />
+                <div className="d-flex flex-wrap flex-grow-1 justify-content-end gap-3 align-content-start">
+                    <Link to={`/admin-panel/lines/${lineId}`} className="btn btn-secondary">Go to Lines</Link>
+
+                    <button className="btn btn-success" onClick={handleSubmit}>Save</button>
+                </div>
+            </div>
+            
+            
+            
 
 
-<div className="d-flex justify-content-end gap-3">
-                        <button className="btn btn-secondary" onClick={handleSubmit}>Add trip</button>
-                        <button className="btn btn-success" onClick={handleSubmit}>Save</button>
-                    </div>
 
+<div className="d-flex justify-content-evenly align-content-start  flex-wrap">
             {data.length != 0 &&
                 <Timetable routes={routes} schedule={data[selectedSchedule]} handleRouteChange={handleRouteChange}
                     selectedSchedule={selectedSchedule} handleReverseStops={handleReverseStops} handleChange={handleChange}
-                    staticData={staticData}
-                    className="col-md-4" />
+                    staticData={staticData} handleDeleteTrip={handleDeleteTrip}
+                    className="col-md-8" />
             }
 
 
             {data.length != 0 &&
-                <div className="col-md-4">
-                    
-                    <Constraints schedule={data[selectedSchedule]} />
+                <div className="">
+                    <div className="">
+                    <button className="btn btn-secondary" onClick={handleAddTrip}>
+                    <FontAwesomeIcon icon={faPlus} /> Add trip</button>
+                    </div>
+                    <Constraints schedule={data[selectedSchedule]} handleChange={handleChange} />
                 </div>
             }
+            </div>
             
         </main>
     )
