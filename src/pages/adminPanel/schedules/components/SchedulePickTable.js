@@ -1,17 +1,18 @@
 import { faArrowLeft, faRotateLeft, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-export default function SchedulePickTable({data, className, handleNewSchedule, selectedSchedule, handleClickOpen}) {
+export default function SchedulePickTable({data, className, handleNewSchedule, selectedSchedule, handleClickOpen,
+        validationOn}) {
     
     
     
     const generateName = (trip) => {
         if (!trip.boundFor || !trip.timeList[0]) return "Dir & Time"
         let name;
-        if (trip.boundFor === "OUT_BOUND") name = <FontAwesomeIcon icon={faArrowLeft} style={{width: "16px",transform: "scaleX(-1)"}} />
-        else if (trip.boundFor === "CITY_BOUND") name = <FontAwesomeIcon icon={faArrowLeft} style={{ width: "16px"}} />
-        else if (trip.boundFor === "CIRCLE") name = <FontAwesomeIcon icon={faRotateLeft} style={{ width: "16px"}} />
-        
+        if (trip.boundFor === "Out bound") name = <FontAwesomeIcon icon={faArrowLeft} style={{width: "16px",transform: "scaleX(-1)"}} />
+        else if (trip.boundFor === "City bound") name = <FontAwesomeIcon icon={faArrowLeft} style={{ width: "16px"}} />
+        else if (trip.boundFor === "Cirlce") name = <FontAwesomeIcon icon={faRotateLeft} style={{ width: "16px"}} />
+
         const [hours, mins] = trip?.timeList[0].split(":")
         name = <span key={trip.id}>{name} {`${hours}:${mins}`}</span>; 
 
@@ -44,7 +45,11 @@ export default function SchedulePickTable({data, className, handleNewSchedule, s
                         :
                         data.map((row, index) => (
                             <div className={`${index === selectedSchedule ? "bg-primary my-active" : ""} p-1`} 
-                                key={row.id} onClick={()=>handleClickOpen(index)}>
+                            style={{border: 
+                                validationOn && (row.runsOnWeekly.length === 0 || 
+                                    !row.runsOnYearlyId || !row.timeConstraintsDescription ||  row.trips.some(trip => trip.timeList.some(time=> !time))) ?
+                                "2px dashed red" : ""}}
+                                key={index} onClick={()=>handleClickOpen(index)}>
                             <div className="my-cursor-pointer my-active-scale-down d-flex gap-1">
                                 {daysOfWeek(row)}{row.trips.map(t=>generateName(t))}
                             </div>

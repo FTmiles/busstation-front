@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { apiGetSchedules, apiGetRoutesByLine } from "services/user.service";
-import { faArrowLeft, faRotateLeft, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { apiGetSchedules, apiGetRoutesByLine, apiPostSchedules } from "services/user.service";
+import { faArrowLeft, faRotateLeft, faPlus, faTrashCan} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SchedulePickTable from "./components/SchedulePickTable";
 import Timetable from "./components/Timetable";
@@ -16,10 +16,12 @@ let typingDebounce = null;
 export default function SchMain(){
     const {lineId} = useParams();
     const [data, setData] = useState();
+    const [lineTitle, setLineTitle] = useState();
     const [staticData, setStaticData] = useState();
     const [selectedSchedule, setSelectedSchedule] = useState(0);
     const [routes, setRoutes] = useState();
-    const [showValidationFailedMsg, setShowValidationFailedMsg] = useState(false);
+    const [showTopBarMsg, setShowTopBarMsg] = useState();
+    const [validationOn, setValidationOn] = useState(false);
 
 
      useEffect(() => {
@@ -27,8 +29,10 @@ export default function SchMain(){
             setData(response.data.data)
             setStaticData({
                 "emptySchedule": response.data.empty,
-                "boundForOptions": response.data.boundForOptions
+                "boundForOptions": response.data.boundForOptions,
+                "yearlyOptions": response.data.yearlyOptions
             })
+            setLineTitle(response.data.lineTitle)
         });
         apiGetRoutesByLine(lineId).then(response => setRoutes(response.data));
     }, [])
@@ -63,14 +67,16 @@ const handleReverseStops = (val, tripIndex) => {
 const handleNewSchedule = () => {
     //add routes[0].id (first by default) to the schedule > trip 
     //deeper copy, avoids staticData mutation
-    const empty = {...staticData.emptySchedule};
-    empty.trips = [{...staticData.emptySchedule.trips[0]}]
+    const empty = JSON.parse(JSON.stringify(staticData.emptySchedule));
+    empty.id = newId--;
     empty.trips[0].routeId = routes[0].id;
+    empty.trips[0].id = newId--;
 
     setData(og => [...og, empty])
     
     //combined with the following useEffect, helps change selectedSchedule to the newly created one
     flagGimmeLastSchedule = true;
+    setValidationOn(false)
 
 }
 useEffect(() => {
@@ -98,6 +104,7 @@ const handleChange = (newValue, path, key, debounceTime=200) =>{
                 for (let step of path)
                     currentStep = currentStep[step];
             }
+            console.log("new year", newValue)
 
             currentStep[key] = newValue;
             return newData;
@@ -120,30 +127,66 @@ const handleSubmit = () => {
     setData(dataCopy);
     
     //if big main validation fails
+
     if (!isAllDataValid(dataCopy)){
-        setShowValidationFailedMsg(true);
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(() => {
-            setShowValidationFailedMsg(false);
-        }, 3000); // 3 seconds
+        setValidationOn(true);
+        msgRun("Input validation failed, check if everything's entered right", "danger", 3000)
+        
+        return;
     }
 
+    //validation passed, calling post api
+    setValidationOn(false)
+    //map negative IDs to null. only used in trips
+    //why copy2? because  "setData(dataCopy)" is async and is executed after i nullify negative IDs, causing errors
+    const dataCopy2 = JSON.parse(JSON.stringify(dataCopy))
+    dataCopy2.forEach(schedule=> {
+        if (schedule.id < 0 ) schedule.id = null;
+
+        schedule.trips.forEach(trip => {
+        if (trip.id < 0) trip.id = null;
+    })
+        if (!schedule.lineId) schedule.lineId = lineId;
+})
+
+    dataCopy2[0].runsOnYearlyId = 2;
+    console.log("posting this -> ", dataCopy2)
+    
+    apiPostSchedules(dataCopy2).then(response => {
+        setData(response.data)
+        msgRun("Successfully saved to the database", "success", 3000)
+    })
 }
 
+const msgRun = (msg, color, time) => {
+    setShowTopBarMsg({msg:msg, color:color});
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+        setShowTopBarMsg();
+    }, time); 
+}
 
 const isAllDataValid = (data) => {
-    //each schedule
-    for (const schedule of data) {
+
+    //each schedule , need index, to highlight failures
+    for (let index = 0; index < data.length; index++) {
+        let schedule = data[index]
 
     //constraints
-        if (schedule.runsOnWeekly.length === 0) return false
-        if (!schedule.runsOnYearly) return false
+        if (
+            schedule.runsOnWeekly.length === 0 ||
+            !schedule.runsOnYearlyId ||
+            !schedule.timeConstraintsDescription
+            ) {
+            return false;
+        } 
     //each trip
         for (const trip of schedule.trips) {
 
     //each time
             for (const time of trip.timeList) {
-                if (!time) return false;
+                if (!time) 
+                    return false;
             }
         
         }
@@ -182,11 +225,13 @@ const handleAddTrip = () => {
         const dataCopy = JSON.parse(JSON.stringify(data))
         const id = newId--;
 
-        const emptyTrip = staticData.emptySchedule.trips[0];
+        console.log("static data here", staticData)
+        // const emptyTrip = staticData.emptySchedule.trips[0];
+        const emptyTrip = JSON.parse(JSON.stringify(staticData.emptySchedule.trips[0]));
         emptyTrip.id = id;
         emptyTrip.routeId = routes[0].id;        
         
-        
+        // console.log('pushing this ding', emptyTrip)
         dataCopy[selectedSchedule].trips
             .push(emptyTrip)
 
@@ -194,8 +239,20 @@ const handleAddTrip = () => {
     })
 }
 
+const handleDelSchedule = () => {
+    setData(og => og.filter((schedule, index) => index != selectedSchedule  ))
+    const selectedBefore = selectedSchedule;
+    const schedCount = data.length;
+    if (schedCount < 2) 
+        setSelectedSchedule(0);
+    else if (schedCount - 1 === selectedBefore) 
+        setSelectedSchedule(og => og - 1)
+    
+
+}
+
     //data loading
-    if (!data || !routes) return <main>loading...</main>;
+    if (!data || !routes || !lineTitle) return <main>loading...</main>;
     
     //data loaded, but this line doesn't have any routes yet
     if (routes.length == 0) return <div className="mt-3">
@@ -209,23 +266,25 @@ const handleAddTrip = () => {
     return(
         <main className="row align-items-start pt-3 pb-3" onClick={logDataFunk}>
               {
-                showValidationFailedMsg &&
-                    <div className="alert alert-danger " role="alert">
-                    Input validation failed, check if everything's entered right
+                showTopBarMsg &&
+                    <div className={`alert alert-${showTopBarMsg.color} `} role="alert">
+                        {showTopBarMsg.msg}
                     </div>
                }
 
-            
-            <div className="d-flex flex-wrap gap-4 mb-5">
-                <SchedulePickTable data={data} className="  " 
-                    handleNewSchedule={handleNewSchedule} routes={routes} handleClickOpen={handleClickOpen} 
-                    selectedSchedule={selectedSchedule} />                
-
+            <div className="d-flex justify-content-between mb-1">
+                <h1 className="h3">{lineTitle}</h1>
                 <div className="d-flex flex-wrap flex-grow-1 justify-content-end gap-3 align-content-start">
                     <Link to={`/admin-panel/lines/${lineId}`} className="btn btn-secondary">Go to Lines</Link>
 
-                    <button className="btn btn-success" onClick={handleSubmit}>Save</button>
+                    <button className="btn btn-success btn-sm" onClick={handleSubmit}>Save</button>
                 </div>
+            </div>
+            <div className="d-flex flex-wrap gap-4 mb-5">
+                <SchedulePickTable data={data} className="" validationOn={validationOn}
+                    handleNewSchedule={handleNewSchedule} routes={routes} handleClickOpen={handleClickOpen} 
+                    selectedSchedule={selectedSchedule} />                
+
             </div>
             
             
@@ -238,7 +297,7 @@ const handleAddTrip = () => {
                 <Timetable routes={routes} schedule={data[selectedSchedule]} handleRouteChange={handleRouteChange}
                     selectedSchedule={selectedSchedule} handleReverseStops={handleReverseStops} handleChange={handleChange}
                     staticData={staticData} handleDeleteTrip={handleDeleteTrip}
-                    className="col-md-8" />
+                    className="col-md-8" validationOn={validationOn} />
             }
 
 
@@ -247,8 +306,14 @@ const handleAddTrip = () => {
                     <div className="">
                     <button className="btn btn-secondary" onClick={handleAddTrip}>
                     <FontAwesomeIcon icon={faPlus} /> Add trip</button>
+
+                    <button className="btn btn-danger" onClick={handleDelSchedule}>
+                    <FontAwesomeIcon icon={faTrashCan} /> Del schedule</button>
                     </div>
-                    <Constraints schedule={data[selectedSchedule]} handleChange={handleChange} />
+
+                    <Constraints schedule={data[selectedSchedule]} handleChange={handleChange} 
+                    yearlyOptions={staticData.yearlyOptions} data={data} 
+                    validationOn={validationOn} />
                 </div>
             }
             </div>

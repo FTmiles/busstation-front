@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const TimeInput = ({defaultValue, handleChange, path, inputIndex}) => {
+const TimeInput = ({defaultValue, handleChange, path, inputIndex, className}) => {
   const [time, setTime] = useState(defaultValue);
   const [invalidFormat, setInvalidFormat] = useState(false);
   const handleChangeLocal = (e) => {
@@ -81,7 +81,7 @@ const TimeInput = ({defaultValue, handleChange, path, inputIndex}) => {
       onChange={handleChangeLocal}
       onBlur={handleBlur}
       placeholder="HH:MM"
-      className={invalidFormat ? 'border border-danger' : ''}
+      className={`${invalidFormat ? 'border border-danger' : ''} ${className}` }
 
     />
   );

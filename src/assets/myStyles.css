@@ -132,3 +132,7 @@
   background: #c9e4ff;
   color: black!important;
 }
+
+.my-valid-border {
+  border: 2px dashed red;
+}

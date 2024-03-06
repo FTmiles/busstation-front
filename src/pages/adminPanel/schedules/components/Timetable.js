@@ -3,7 +3,7 @@ import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 
-export default function Timetable({schedule, selectedSchedule, className, routes, handleRouteChange, handleReverseStops, handleChange, staticData, handleDeleteTrip}){
+export default function Timetable({schedule, selectedSchedule, className, routes, handleRouteChange, handleReverseStops, handleChange, staticData, handleDeleteTrip, validationOn}){
     
     const timeConvert = (string) => {
         if (!string) return "";
@@ -38,35 +38,40 @@ export default function Timetable({schedule, selectedSchedule, className, routes
                 <table className="caption-top  d-inline-block" key={trip.id}>
 {/* -----------CAPTION-------------------------------------- */}
                     <caption>  
-                        <div className="d-flex justify-content-between">
+                        {/* direction select */}
+                        <div>
                             <select className="form-select" aria-label="Default select example" key={index}
-                                onChange={e => handleChange(e.target.value, ["trips", index, ], "boundFor")}
-                                value={trip.boundFor}>
-                                    {/* {data.info[infoKey] ?? <option value=""></option>} */}
-                                {
-                                    staticData.boundForOptions.map((boundForEnum, index) => (//this key is unique, GOOD
-                                        <option key={index} value={boundForEnum}>{boundForEnum}</option>
-                                    ))
-                                }
+                                    onChange={e => handleChange(e.target.value, ["trips", index, ], "boundFor", 0)}
+                                    value={trip.boundFor}>
+
+                                    {
+                                        staticData.boundForOptions.map((boundForEnum, index) => (//this key is unique, GOOD
+                                            <option key={index} value={boundForEnum}>{boundForEnum}</option>
+                                        ))
+                                    }
                             </select>
-
-
-                            <div className="form-check form-switch">
-                                <label className="form-check-label">
-                                    <input className="form-check-input" type="checkbox" role="switch"  
-                                    onChange={(e)=>handleReverseStops(e.target.checked, index)}/>
-                                Reverse</label>
-                            </div>
                         </div>
-                        <select className="form-select" aria-label="Default select example" key={index}
-                        value={trip.routeId}
-                        onChange={(e)=> handleRouteChange(Number(e.target.value), index)}>
-                                {
-                                    routes.map(route => (//this key is unique, GOOD
-                                        <option key={route.id} value={route.id}>{route.routeNotes}</option>
-                                    ))
-                                }
+                        {/* route select */}
+                        <div>
+                            <select className="form-select" aria-label="Default select example" key={index}
+                            value={trip.routeId}
+                            onChange={(e)=> handleRouteChange(Number(e.target.value), index)}>
+                                    {
+                                        routes.map(route => (//this key is unique, GOOD
+                                            <option key={route.id} value={route.id}>{route.routeNotes}</option>
+                                        ))
+                                    }
                             </select>
+                        </div>
+                        {/* reverse switch */}
+                        <div className="form-check form-switch">
+                            <label className="form-check-label">
+                                <input className="form-check-input" type="checkbox" role="switch"  
+                                onChange={(e)=>handleReverseStops(e.target.checked, index)} 
+                                checked={trip.routeDirReversed}
+                                />
+                            Reverse</label>
+                        </div>
                     </caption>
 {/* -----------ENDS CAPTION-------------------------------------- */}
                     <thead>
@@ -87,6 +92,7 @@ export default function Timetable({schedule, selectedSchedule, className, routes
                                     {
                                         <TimeInput defaultValue={row.time} 
                                         handleChange={handleChange} path={["trips", index, "timeList"]} inputIndex={i}
+                                        className={validationOn && !row.time? "my-valid-border" : ""}
                                         ></TimeInput>
                                     }
                                 </td>
