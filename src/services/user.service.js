@@ -38,6 +38,10 @@ export const apiGetBusStopsAll = () => {
   return axios.get(`${API_ROOT_PATH}/busstop/get/all`, {headers: authHeader()})
 }
 
+export const apiGetAllStopsAndUsage = () => {
+  return axios.get(`${API_ROOT_PATH}/busstop/get-all-with-usage`, {headers: authHeader()})
+}
+
 export const apiPostBusStopSave = (formData) => {
   return axios.post(`${API_ROOT_PATH}/busstop/save/one`, formData, {headers: authHeader()})
 }

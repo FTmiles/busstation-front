@@ -2,7 +2,7 @@ import ReadOnlyRow from "./ReadOnlyRow";
 import EditableRow from "./EditableRow";
 import TableSearch from "./TableSearch";
 //
-import { apiGetBusStopsAll, apiPostBusStopSave, apiGetBusStopSearch, apiDelBusStop } from "services/user.service.js"
+import { apiGetBusStopsAll, apiPostBusStopSave, apiGetBusStopSearch, apiDelBusStop, apiGetAllStopsAndUsage } from "services/user.service.js"
 
 
 import { useState, useEffect } from "react";
@@ -16,8 +16,14 @@ export default function BusStopManager(){
     const [editTRowData, setEditTRowData] = useState({})
     let debounceTimeout;
 
+    // useEffect(()=>{
+    //     apiGetBusStopsAll()
+    //         .then(response => setTableData(response.data))
+    //         .catch(error=> console.log("error fetching data - Bus stops", error))
+    // }, [])
+
     useEffect(()=>{
-        apiGetBusStopsAll()
+        apiGetAllStopsAndUsage()
             .then(response => setTableData(response.data))
             .catch(error=> console.log("error fetching data - Bus stops", error))
     }, [])
@@ -50,7 +56,7 @@ export default function BusStopManager(){
         apiPostBusStopSave(formData)
         .then(response => {
           console.log('Entry added successfully:', response.data);
-          setTableData(oldVals => ([...oldVals, response.data]));
+          setTableData(oldVals => ([...oldVals, {stop: response.data, usedInLines:[]}]));
           setFormData(ogObj => {
             const wipedObj = {}
             Object.keys(ogObj).forEach(key => wipedObj[key] = "")
@@ -68,9 +74,9 @@ export default function BusStopManager(){
             .then(response => {
                 console.log("Entry updated successfully:", response.data);
                 setTableData(ogArray => {
-                    const index = ogArray.findIndex(x=> x.id === editRowId)
+                    const index = ogArray.findIndex(x=> x.stop.id === editRowId)
                     const newArray = [...ogArray]
-                    newArray[index] = response.data
+                    newArray[index].stop = response.data
                     return newArray;
                 })})
                 .catch(error => console.error('Error updating entry: ', error.message))
@@ -87,7 +93,7 @@ export default function BusStopManager(){
     
 
     const handleDeleteClick = (row) => {
-        setTableData(og=> og.filter(x=> x !== row))
+        setTableData(og=> og.filter(x=> x.stop.id !== row.id))
         apiDelBusStop(row.id)
 
     }
@@ -107,8 +113,15 @@ export default function BusStopManager(){
         }, 500); // Debouncer delay
     }
 
+
+    const logState = () => {
+        console.log("table data", tableData);
+        console.log("form data", formData);
+        console.log("edit trow data", editTRowData);
+    }
+
     return (
-        <>
+        <main onClick={logState}>
             <h1>Manage bus stops</h1>
             
             <TableSearch handleSearchChange={handleSearchChange} />
@@ -148,10 +161,10 @@ export default function BusStopManager(){
             <tbody>
                 {tableData.map(row=>(
 
-                editRowId === row.id ? 
-                    <EditableRow editTRowData={editTRowData} handleEditFormChange={handleEditFormChange} key={row.id}
+                editRowId === row.stop.id ? 
+                    <EditableRow editTRowData={editTRowData} handleEditFormChange={handleEditFormChange} key={row.stop.id}
                      handleCancelClick={handleCancelClick} /> : 
-                    <ReadOnlyRow row={row} handleEditClick={handleEditClick} handleDeleteClick={handleDeleteClick} key={row.id} />
+                    <ReadOnlyRow row={row.stop} usedInLines={row.usedInLines}  handleEditClick={handleEditClick} handleDeleteClick={handleDeleteClick} key={row.stop.id} />
 
                  ))}
             </tbody>
@@ -161,6 +174,6 @@ export default function BusStopManager(){
 
             
 
-        </>
+        </main>
     )
 }

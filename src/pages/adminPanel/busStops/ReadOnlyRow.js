@@ -1,9 +1,14 @@
 import { faTrashCan, faPencil } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 
-export default function ReadOnlyRow({ row, handleEditClick, handleDeleteClick }) {
+export default function ReadOnlyRow({ row, handleEditClick, handleDeleteClick, usedInLines }) {
+  const [showingUsage, setShowingUsage] = useState(false);
+
   return (
+    <>
     <tr>
       <td>{row.name}</td>
       <td>{row.coords}</td>
@@ -14,11 +19,36 @@ export default function ReadOnlyRow({ row, handleEditClick, handleDeleteClick })
         </div>
       </td>
       <td>
-        <span className="table-action-td">
+        <div className="d-flex justify-content-around">
         <FontAwesomeIcon className='btn btn-sm' icon={faPencil} onClick={()=>handleEditClick(row)} />
-        <FontAwesomeIcon className='btn btn-sm' icon={faTrashCan} onClick={()=>handleDeleteClick(row)} />
-        </span>
+
+        <button type="button" className="btn btn-sm py-0" onClick={()=> setShowingUsage(og => !og)}>
+          <span className={`badge text-bg-${usedInLines.length > 0 ? "primary" : "danger"}`}>{usedInLines.length}</span>
+        </button>
+
+        <button className='btn btn-sm py-0' disabled={usedInLines.length > 0} onClick={()=>handleDeleteClick(row)}><FontAwesomeIcon icon={faTrashCan} /></button>
+
+        </div>
       </td>
     </tr>
+
+    {
+      showingUsage && 
+      <tr>
+        <td className='bg-secondary text-light' colSpan={4}>
+          {
+            usedInLines.map(line => (
+              <Link to={`/admin-panel/lines/${line.id}`}
+                className="text-decoration-none text-light  m-2">
+                <span key={line.id} className='bg-dark rounded p-1' style={{fontSize: "0.7em"}}>{line.name}</span>
+              </Link>
+              
+            ))  
+          }
+        </td>      
+      </tr>
+    }
+    
+    </>
   );
 }
