@@ -136,3 +136,24 @@
 .my-valid-border {
   border: 2px dashed red;
 }
+
+/* datepicker overwriting -  align-items: center, with center, top bar keeps shifting up n down */
+.react-datepicker__portal {
+  align-items: start;
+  padding-top: 10%;
+}
+
+/*Yearly rules menu active element - selection*/
+
+.my-yearly-rules .active {
+  background: grey;
+}
+
+.my-yearly-rules .my-valid-border {
+  border: 2px dashed red!important;
+}
+
+/* Schedules by rule id */
+.my-150px-span {
+  width: 150px;
+}

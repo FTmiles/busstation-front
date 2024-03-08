@@ -256,7 +256,7 @@ export default function LinePageEdit(){
                                         style={{ padding:0, margin:0, flexGrow:5}}>
                                             {index+1}. {row.routeNotes }
                                             {/* if is used by schedules, give links */}
-                                            { showScheduleLinks && data.routeUsage[index]?.map(x=> <Link style={{fontSize: "0.7rem"}} className="btn btn-dark btn-sm py-0 px-1 mx-1" to={`/admin-panel/schedules/${x}`}>{x}</Link>   )}
+                                            { showScheduleLinks && data.routeUsage[index]?.map(x=> <Link style={{fontSize: "0.7rem"}} className="btn btn-dark btn-sm py-0 px-1 mx-1" to={`/admin-panel/schedules/${lineId}/${x}`}>{x}</Link>   )}
                                     </span>
                                 {data.routeUsage[index] && data.routeUsage[index].length !== 0 ? 
                                  <button className="btn"  onClick={()=>setShowScheduleLinks(og=> !og)}>{data.routeUsage[index].length} </button>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
+
 import { apiGetSchedules, apiGetRoutesByLine, apiPostSchedules } from "services/user.service";
 import { faArrowLeft, faRotateLeft, faPlus, faTrashCan} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -14,7 +15,7 @@ let timeoutId;
 let typingDebounce = null;
 
 export default function SchMain(){
-    const {lineId} = useParams();
+    const {lineId, openScheduleId} = useParams();
     const [data, setData] = useState();
     const [lineTitle, setLineTitle] = useState();
     const [staticData, setStaticData] = useState();
@@ -22,11 +23,20 @@ export default function SchMain(){
     const [routes, setRoutes] = useState();
     const [showTopBarMsg, setShowTopBarMsg] = useState();
     const [validationOn, setValidationOn] = useState(false);
+    const navigate = useNavigate();
+
 
 
      useEffect(() => {
         apiGetSchedules(lineId).then(response => {
             setData(response.data.data)
+            
+            //URL contains scheduleId -> set setSelectedSchedule to be it
+            if (openScheduleId) {
+                const index = response.data.data.findIndex(schedule => schedule.id == openScheduleId);
+                if (index != -1) setSelectedSchedule(index)
+            }
+
             setStaticData({
                 "emptySchedule": response.data.empty,
                 "boundForOptions": response.data.boundForOptions,
@@ -41,6 +51,7 @@ const logDataFunk = () => {
     console.log("data", data);
     console.log("routes", routes);
     console.log("staticData.emptySchedule", staticData)
+    console.log("selected schedule", selectedSchedule);
 }
 
 const handleRouteChange = (newRouteId, tripIndex) => {
@@ -90,6 +101,10 @@ useEffect(() => {
 
 const handleClickOpen = (index) => {
     setSelectedSchedule(index);
+
+    let id = data[index].id;
+    if (id >= 0)
+        navigate(`/admin-panel/schedules/${lineId}/${id}`);
 }
 
 const handleChange = (newValue, path, key, debounceTime=200) =>{
@@ -149,8 +164,8 @@ const handleSubmit = () => {
         if (!schedule.lineId) schedule.lineId = lineId;
 })
 
-    dataCopy2[0].runsOnYearlyId = 2;
-    console.log("posting this -> ", dataCopy2)
+    // dataCopy2[0].runsOnYearlyId = 2;
+    // console.log("posting this -> ", dataCopy2)
     
     apiPostSchedules(dataCopy2).then(response => {
         setData(response.data)
@@ -247,8 +262,6 @@ const handleDelSchedule = () => {
         setSelectedSchedule(0);
     else if (schedCount - 1 === selectedBefore) 
         setSelectedSchedule(og => og - 1)
-    
-
 }
 
     //data loading

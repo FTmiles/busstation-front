@@ -92,3 +92,16 @@ export const apiGetRoutesByLine = (lineId) => {
   return axios.get(`${API_ROOT_PATH}/route/byline/${lineId}`, {headers: authHeader()})
 }
 
+//Yearly Rules
+
+export const apiGetAllYearlyRules = () => {
+  return axios.get(`${API_ROOT_PATH}/yearly-rules/get-all`, {headers: authHeader()})
+}
+
+export const apiPostYearlyRulesCombo = (data) => {
+ return axios.post(`${API_ROOT_PATH}/yearly-rules/post-combo-list`, data, {headers: authHeader()})
+}
+
+export const apieGetSchedulesByRule = (ruleId) => {
+  return axios.get(`${API_ROOT_PATH}/scheduleItem/get-schedules-by-rule?ruleId=${ruleId}`, {headers: authHeader()})
+}

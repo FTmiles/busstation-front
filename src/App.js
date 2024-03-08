@@ -6,7 +6,7 @@ import NoPage from "pages/nopage/NoPage.js";
 import AdminPanel from "pages/adminPanel/AdminPanel.js";
 import PublicHolidayManager from "pages/adminPanel/publicHoliday/PublicHolidayManager";
 import AdminWelcome from "pages/adminPanel/AdminWelcome";
-import YearlyRules from "pages/adminPanel/YearlyRules";
+import YearlyMain from "pages/adminPanel/yearlyRules/YearlyMain";
 import BusStopManager from "pages/adminPanel/busStops/BusStopManager";
 import BusLines from "pages/adminPanel/lines/BusLines";
 import LinePage from "pages/adminPanel/lines/LinePage/LinePage";
@@ -14,6 +14,7 @@ import LinePageEdit from "pages/adminPanel/lines/LinePage/LinePageEdit";
 import Login from "authComponents/Login";
 import SchLines from "pages/adminPanel/schedules/SchLines";
 import SchMain from "pages/adminPanel/schedules/SchMain";
+import SchedulesByRule from "pages/adminPanel/yearlyRules/SchedulesByRule";
 
 function App() {
   return (
@@ -29,7 +30,9 @@ function App() {
             <Route index element={<AdminWelcome />} />
 
              <Route path="holidays" element={<PublicHolidayManager />} />
-             <Route path="yearly-rules" element={<YearlyRules />} />
+             <Route path="yearly-rules" element={<YearlyMain />} />
+             <Route path="yearly-rules/:ruleId" element={<SchedulesByRule />} />
+             
              <Route path="bus-stops" element={<BusStopManager />} />
              
              <Route path="lines" element={<BusLines />} />
@@ -39,6 +42,7 @@ function App() {
              
              <Route path="schedules" element={<SchLines />} />
              <Route path="schedules/:lineId" element={<SchMain />} />
+             <Route path="schedules/:lineId/:openScheduleId" element={<SchMain />} />
           </Route>
           <Route path="/backdoor" element={<Login />} />
 
