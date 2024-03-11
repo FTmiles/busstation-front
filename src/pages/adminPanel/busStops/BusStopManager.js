@@ -110,7 +110,7 @@ export default function BusStopManager(){
                     )})
                     .catch(error => console.error('Error updating entry: ', error.message))
                 
-        }, 500); // Debouncer delay
+        }, 0); // Debouncer delay
     }
 
 
@@ -128,7 +128,10 @@ export default function BusStopManager(){
 
             <form className="row g-3" onSubmit={handleAddFormSubmit} autoComplete="off" id="newBusStopForm">
                 <div className="col-auto">
-                    <input name="name" placeholder="Enter new bus stop..." onChange={handleAddFormChange}
+                    <input name="name" placeholder="Enter new bus stop..." onChange={(e) => {
+                        handleAddFormChange(e)
+                        handleSearchChange(e.target.value)
+                    }}
                     className="form-control" value={formData.name} />
                 </div>
                 <div className="col-auto">
@@ -159,14 +162,15 @@ export default function BusStopManager(){
                 </tr>
             </thead>
             <tbody>
+                {console.log("table data here",tableData)}
                 {tableData.map(row=>(
-
+                row && (
                 editRowId === row.stop.id ? 
                     <EditableRow editTRowData={editTRowData} handleEditFormChange={handleEditFormChange} key={row.stop.id}
                      handleCancelClick={handleCancelClick} /> : 
-                    <ReadOnlyRow row={row.stop} usedInLines={row.usedInLines}  handleEditClick={handleEditClick} handleDeleteClick={handleDeleteClick} key={row.stop.id} />
+                    <ReadOnlyRow row={row.stop} usedInLines={row.usedInLines}  handleEditClick={handleEditClick} handleDeleteClick={handleDeleteClick} key={row.stop?.id} />
 
-                 ))}
+                 )))}
             </tbody>
             </table>
             </form>

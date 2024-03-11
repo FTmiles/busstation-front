@@ -90,6 +90,10 @@ export const apiPostSchedules = (data) => {
   return axios.post(`${API_ROOT_PATH}/scheduleItem/post-schedule-dto`, data, {headers: authHeader()})
 }
 
+export const apiDelScheduleById = (schedId) => {
+  return axios.delete(`${API_ROOT_PATH}/scheduleItem/delete/${schedId}`, {headers: authHeader()})
+}
+
 //Routes
 
 export const apiGetRoutesByLine = (lineId) => {

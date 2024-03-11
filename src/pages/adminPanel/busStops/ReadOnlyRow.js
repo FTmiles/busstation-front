@@ -37,8 +37,8 @@ export default function ReadOnlyRow({ row, handleEditClick, handleDeleteClick, u
       <tr>
         <td className='bg-secondary text-light' colSpan={4}>
           {
-            usedInLines.map(line => (
-              <Link to={`/admin-panel/lines/${line.id}`}
+            usedInLines.map((line, index) => (
+              <Link to={`/admin-panel/lines/${line.id}`} key={index}
                 className="text-decoration-none text-light  m-2">
                 <span key={line.id} className='bg-dark rounded p-1' style={{fontSize: "0.7em"}}>{line.name}</span>
               </Link>

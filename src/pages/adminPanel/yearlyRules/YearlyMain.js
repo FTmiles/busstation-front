@@ -24,9 +24,11 @@ export default function  YearlyMain() {
     useEffect(()=>{
         apiGetAllYearlyRules().then(response => {
             setData(response.data.rules)
-            //sort().reverse()  - makes static be at index 0 - Static dates
-            setSelectedRule({index:0, type:Object.keys(response.data.rules).sort().reverse()[0]})
             setSchedules(response.data.schedules)
+            
+            //sort().reverse()  - makes static be at index 0 - Static dates
+            if ( (response.data.rules[Object.keys(response.data.rules).sort().reverse()[0]]).length > 0   )
+                setSelectedRule({index:0, type:Object.keys(response.data.rules).sort().reverse()[0]})
         })
     },[])
 
@@ -105,7 +107,8 @@ const handleAddNewRule = (type) => {
         [type]: [...og[type], getEmptyRule(type)] 
     }))
     //adjust selected item
-    setSelectedRule(og => ({...og, "index": data[type].length}))
+    // setSelectedRule(og => ({...og, "index": data[type].length}))
+    setSelectedRule(og => ({type:type, "index": data[type].length}))
 }
 
 
@@ -193,20 +196,24 @@ const handleDelRule = () => {
         const ogLength = data[selectedRule.type].length;
 
         if (ogLength <= 1) 
-            setSelectedRule({index:null, type:null});
+            setSelectedRule(og => ({type:null, index:0}));
         else if (ogLength - 1 === selectedBefore) 
             setSelectedRule(og => ({...og, "index": og.index - 1}))
+        // if (ogLength - 1 === selectedBefore) 
+        //     setSelectedRule(og => ({...og, "index": og.index - 1}))
    
     
 }
 
 const getscheduleCount = () => {
+    if (data[selectedRule.type].length === 0) return 0
  return schedules.find(x => x.ruleId == data[selectedRule.type][selectedRule.index].id)?.schedules.length ?? "0"
 }
 
+
     //loading
     if (!data) return <main>loading...</main>
-
+    loggingStuff();
     return (
         // <main onClick={loggingStuff} className="mt-3">
         <main onClick={loggingStuff} className="mt-3">
@@ -227,9 +234,13 @@ const getscheduleCount = () => {
             <div className="col-md-8">
                 <div className="d-flex justify-content-between mb-2">
                     <div>
-                        <button className="btn btn-danger" onClick={handleDelRule} disabled={getscheduleCount() > 0}>Del rule</button>
                         {
-                            data[selectedRule.type][selectedRule.index].id > 0 && 
+                         selectedRule.type != null &&
+                        <button className="btn btn-danger" onClick={handleDelRule} disabled={getscheduleCount() > 0}>Del rule</button>
+                        }
+
+                        {
+                            data[selectedRule.type] && data[selectedRule.type][selectedRule.index]?.id > 0 && 
                             <Link to={`/admin-panel/yearly-rules/${data[selectedRule.type][selectedRule.index].id}`} className="btn btn-Light">
                                 Used by Schedules <span className="badge text-bg-secondary"> {getscheduleCount()} </span>
                             </Link>
@@ -238,17 +249,18 @@ const getscheduleCount = () => {
                     </div>
                     <button className="btn btn-success" onClick={handleSubmit}>Save</button>
                 </div>
-                {   selectedRule.type &&
-                    (
-                    selectedRule.type === "Static dates" 
-                    ?
+                {   
+                    selectedRule.type === "Static dates" && data[selectedRule.type].length > 0
+                    &&
                     <StaticDates rule={data[selectedRule.type][selectedRule.index]} selectedRule={selectedRule} handleChange={handleChange} 
                     handleAddNewDate={handleAddNewDate} handleDeleteDate={handleDeleteDate} validationOn={validationOn} />
-                    :
+                }
+                {
+                    selectedRule.type === "Formula pattern" && data[selectedRule.type].length > 0
+                    &&
                     <FormulaPattern rule={data[selectedRule.type][selectedRule.index]} selectedRule={selectedRule} 
                     handleChange={handleChange} handleAddNewPatternParams={handleAddNewPatternParams} handleDeletePatternParams={handleDeletePatternParams} 
                     validationOn={validationOn} />
-                    )
                 }
 
             </div>

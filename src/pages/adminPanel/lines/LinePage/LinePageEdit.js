@@ -4,9 +4,8 @@ import BusStopTableEdit from "./BusStopTableEdit";
 import { useLocation } from 'react-router-dom';
 import { apiPostLineEager, apiGetEmptyLine } from "services/user.service";
 import { lineInfoLabel } from "utils/myUtils";
-import { faTrashCan, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faTrashCan, faPlus, faCopy } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { logDOM } from "@testing-library/react";
 
 let nextId = -1000;
 
@@ -32,16 +31,9 @@ export default function LinePageEdit(){
         apiGetEmptyLine().then(response => setData(response.data))
     }, [])
 
-    useEffect(()=>{
-        
-        
-        
-        // axios.get(`${config.API_ROOT_PATH}/line/line-eager?id=${lineId}`)
-        // .then(response => {
-        //     setData(response.data);
-        //     setActiveRouteIndex(response.data.routes[0].id);
-        // })
-    }, [])
+const logState = () => {
+    console.log(data);
+}
     
 
     const handleSubmit = () => {
@@ -49,9 +41,11 @@ export default function LinePageEdit(){
         console.log("DATA", data);
 
         //Validation --
-        for (let key of Object.keys(data.info)) {
-            if (key !== "id" && !data.info[key]) return
-        }
+        // for (let key of Object.keys(data.info)) {
+            // if (key !== "id" && !data.info[key]) return
+        // }
+        if (!data.info.name || !data.info.routeStart || !data.info.routeEnd || !data.info.routeType) return
+
 
         for ( let route of data.routes) {
                 if (!route.routeNotes) return;
@@ -186,9 +180,18 @@ export default function LinePageEdit(){
         })
     }
    
+    const handleCopyRoute = (index) => {
+        setData(og => {
+            const newRoute = JSON.parse(JSON.stringify(data.routes[index]));
+            newRoute.id = nextId--;
+            newRoute.routeNotes = newRoute.routeNotes + " - copy"
+            return {...og, "routes": [...og.routes, newRoute]}
+        })
+    }
+
  if (!data) return(<div>Loading ...</div>);
     return(
-        <main>
+        <main onClick={logState}>
             <div className="d-flex flex-row justify-content-between align-items-center">
              <input className="h1" name="name" defaultValue={data.info.name}
                 onChange={e => handleChange(e.target.value, ["info"], "name")} 
@@ -228,7 +231,7 @@ export default function LinePageEdit(){
                                 )}
                               </select> : 
                               <input className="" name="value" defaultValue={data.info[infoKey]}
-                              style={{ border: validationOn && !data.info[infoKey]? "red 3px dashed" : "" }}
+                              style={{ border: validationOn && (infoKey == "routeEnd" || infoKey == "routeStart" || infoKey == "routeType")&& !data.info[infoKey]? "red 3px dashed" : "", overflowX: "auto", whiteSpace: "nowrap" }}
                               onChange={e => handleChange(e.target.value, ["info"], infoKey)} />                              
                             }
                                 </td>
@@ -245,7 +248,7 @@ export default function LinePageEdit(){
                         {/*  list-group-numbered */}
                         {data.routes.map((row, index)=>(
                               <li className={`list-group-item list-group-item-light
-                                d-flex justify-content-around gap-3 p-0 align-items-center`} 
+                                d-flex justify-content-around gap-1 p-0 align-items-center`} 
                                 style={{background: 
                                     validationOn && (!row.routeNotes || row.stopsArr.some(x => !x.name)) ?
                                     "#ffabab" : ""}}
@@ -256,8 +259,11 @@ export default function LinePageEdit(){
                                         style={{ padding:0, margin:0, flexGrow:5}}>
                                             {index+1}. {row.routeNotes }
                                             {/* if is used by schedules, give links */}
-                                            { showScheduleLinks && data.routeUsage[index]?.map(x=> <Link style={{fontSize: "0.7rem"}} className="btn btn-dark btn-sm py-0 px-1 mx-1" to={`/admin-panel/schedules/${lineId}/${x}`}>{x}</Link>   )}
+                                            { showScheduleLinks && data.routeUsage[index]?.map((x, index)=> <Link style={{fontSize: "0.7rem"}} key={index} className="btn btn-dark btn-sm py-0 px-1 mx-1" to={`/admin-panel/schedules/${lineId}/${x}`}>{x}</Link>   )}
                                     </span>
+                                
+                                <FontAwesomeIcon className='btn' icon={faCopy} onClick={()=>handleCopyRoute(index)} />
+
                                 {data.routeUsage[index] && data.routeUsage[index].length !== 0 ? 
                                  <button className="btn"  onClick={()=>setShowScheduleLinks(og=> !og)}>{data.routeUsage[index].length} </button>
                                 : 

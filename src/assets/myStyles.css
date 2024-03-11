@@ -1,3 +1,7 @@
+input {
+  overflow-x: auto!important
+}
+
 .schedule-item{
     background-color: lightsalmon;
     cursor: pointer;

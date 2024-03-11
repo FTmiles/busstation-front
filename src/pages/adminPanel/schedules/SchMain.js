@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 
-import { apiGetSchedules, apiGetRoutesByLine, apiPostSchedules } from "services/user.service";
+import { apiGetSchedules, apiGetRoutesByLine, apiPostSchedules, apiDelScheduleById } from "services/user.service";
 import { faArrowLeft, faRotateLeft, faPlus, faTrashCan} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SchedulePickTable from "./components/SchedulePickTable";
@@ -108,6 +108,7 @@ const handleClickOpen = (index) => {
 }
 
 const handleChange = (newValue, path, key, debounceTime=200) =>{
+    console.log("EXECUTING HERE")
     clearTimeout(typingDebounce);
     typingDebounce = setTimeout(() => {
   
@@ -236,6 +237,7 @@ const handleDeleteTrip = (delTrip) => {
 }
 
 const handleAddTrip = () => {
+    if (data.length === 0) return
     setData(og => {
         const dataCopy = JSON.parse(JSON.stringify(data))
         const id = newId--;
@@ -256,6 +258,10 @@ const handleAddTrip = () => {
 
 const handleDelSchedule = () => {
     setData(og => og.filter((schedule, index) => index != selectedSchedule  ))
+    if (data[selectedSchedule].id > 0)
+    apiDelScheduleById(data[selectedSchedule].id).then(response => {
+        msgRun("The schedule has been deleted.", "success", 2000)
+    })
     const selectedBefore = selectedSchedule;
     const schedCount = data.length;
     if (schedCount < 2) 
@@ -313,12 +319,19 @@ const handleDelSchedule = () => {
                     className="col-md-8" validationOn={validationOn} />
             }
 
+           {
+                (data.length != 0) && 
+                <div className="d-flex align-items-stretch" style={{marginTop: "100px",height:"200px"}}>
+                    <button className="btn btn-light" onClick={handleAddTrip}>
+                    <FontAwesomeIcon icon={faPlus} /></button>
+                </div>
+           }
+
 
             {data.length != 0 &&
                 <div className="">
                     <div className="">
-                    <button className="btn btn-secondary" onClick={handleAddTrip}>
-                    <FontAwesomeIcon icon={faPlus} /> Add trip</button>
+
 
                     <button className="btn btn-danger" onClick={handleDelSchedule}>
                     <FontAwesomeIcon icon={faTrashCan} /> Del schedule</button>

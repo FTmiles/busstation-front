@@ -8,8 +8,8 @@ console.log(editTRowData);
                     className="form-control" value={editTRowData.name} required  
                     />            </td>
             <td>
-            <input name="coords" placeholder="Coordinates..." onChange={handleEditFormChange}
-                    className="form-control" value={editTRowData.coords} autoComplete="off" />
+            <input name="coords" placeholder="Location..." onChange={handleEditFormChange}
+                    className="form-control" value={editTRowData.coords ?? ""} autoComplete="off" />
             </td>
             <td>
                 <div className="form-check form-switch">

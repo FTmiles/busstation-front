@@ -7,9 +7,13 @@ import { lineInfoLabel } from "utils/myUtils";
 export default function LinePage(){
     const[data, setData] = useState();
     const[activeRouteIndexArr, setActiveRouteIndexArr] = useState([0]);
+    const [showingDistance, setShowingDistance] = useState(true);
+    const [captionHeights, setCaptionHeights] = useState({})
+
     const {lineId} = useParams();
     const secondRowColor = "#dedede";
     const navigate = useNavigate();
+
 
     useEffect(()=>{
         apiGetLineFull(lineId)
@@ -19,15 +23,28 @@ export default function LinePage(){
         })
     }, [])
 
+    const logState = () => {
+        console.log("caption heights: ",captionHeights);
+        console.log("max is ", Math.max(...Object.values(captionHeights))
+        )
+    }
     
-
     const handleRoutesClick = (id) => {
         const index = data.routes.findIndex(el => id === el.id);
 
         if (!activeRouteIndexArr.includes(index))
-            setActiveRouteIndexArr(og => [...og, index]);
+            setActiveRouteIndexArr(og => [...og, index]);   //not sorted, the OG way
+            // setActiveRouteIndexArr(og => [...og, index].sort());
         else 
-            setActiveRouteIndexArr(og => og.filter(i => i != index));
+            setActiveRouteIndexArr(og => {
+        setCaptionHeights(og => {
+            const newCaptionHeights = { ...og };
+            delete newCaptionHeights[id];
+            return newCaptionHeights;
+        })
+
+        return og.filter(i => i != index)
+    });
     }
 
     const handleDeleteLine = () => {
@@ -39,21 +56,23 @@ export default function LinePage(){
 
     if (!data) return (<div>Loading...</div>)
     return(
-        <main>
+        <main onClick={logState}>
             <div className="d-flex flex-row justify-content-between align-items-center">
             <h1>{data.info.name}</h1>
-            <div className="">
-            <Link to={`/admin-panel/schedules/${lineId}`} className="btn btn-secondary mx-2">Go to Schedules</Link>
+            <div className="d-flex gap-3">
+                <div className="form-check form-switch">
+                    <label className="form-check-label"> Show distance
+                        <input className="form-check-input" type="checkbox" role="switch"  
+                        onChange={(e)=>{setShowingDistance(e.target.checked)}} 
+                        checked={showingDistance} />
+                    </label>
+                </div>
+                <Link to={`/admin-panel/schedules/${lineId}`} className="btn btn-secondary">Go to Schedules</Link>
 
-            <Link to={`/admin-panel/lines/${lineId}/edit`}
-             state={data}
-                className="btn btn-primary"
-            >Edit</Link>
+                <Link to={`/admin-panel/lines/${lineId}/edit`} state={data}
+                    className="btn btn-primary">Edit</Link>
 
-            <button
-                className="btn btn-danger mx-2"
-                onClick={handleDeleteLine}
-            >Del {data.info.name}</button>
+                <button className="btn btn-danger" onClick={handleDeleteLine}>Del {data.info.name}</button>
 
             </div>
             </div>
@@ -65,7 +84,7 @@ export default function LinePage(){
                     <tbody>
                         {Object.keys(lineInfoLabel).map((infoKey, index) => (
                             <tr key={index}>
-                              <td>{lineInfoLabel[infoKey]}</td><td>{data.info[infoKey]}</td>
+                              <td className="pe-3">{lineInfoLabel[infoKey]}</td><td>{data.info[infoKey]}</td>
                             </tr>                 
                         ))}
                         
@@ -90,7 +109,7 @@ export default function LinePage(){
             <div className="row" style={{background:secondRowColor}}>
                 <div className="col ">
                     {activeRouteIndexArr.map(index =>   (
-                        <BusStopTable key={index}  activeRoute={data.routes[index]} />    
+                        <BusStopTable key={index}  activeRoute={data.routes[index]} showingDistance={showingDistance} activeRouteIndexArr={activeRouteIndexArr} captionHeights={captionHeights} setCaptionHeights={setCaptionHeights} />    
                     )   )
 
                         

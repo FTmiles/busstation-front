@@ -2,10 +2,10 @@ import CreatableSelect from "react-select/creatable";
 import { useEffect, useRef, useState } from "react";
 import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { apiGetBusStopsAll } from "services/user.service.js";
+import { apiGetBusStopsAll, apiPostBusStopSave } from "services/user.service.js";
 
 let newId = -123;
-
+let flag = 1;
 export default function BusStopTableEdit({
   activeRoute,
   handleChange,
@@ -19,17 +19,22 @@ export default function BusStopTableEdit({
   const counter = useRef();
 
   const handleCreate = (newStopName, i) => {
-    const createStop = {
-      id: newId--,
+    const newStop = {
+      id: null,
       name: newStopName,
     };
-    handleChange(createStop, ["routes", index, "stopsArr"], i);
+
+     apiPostBusStopSave(newStop).then(response => {
+        handleChange(response.data, ["routes", index, "stopsArr"], i); 
+        flag ++;
+     })
+     
   };
 
 
   useEffect(() => {
     apiGetBusStopsAll().then((response) => setAllStops(response.data));
-  }, []);
+  }, [flag]);
 
   
 
@@ -52,11 +57,16 @@ export default function BusStopTableEdit({
         <input
           ref={counter}
           type="number"
+          step="1"          
           min={activeRoute.stopsArr.findLastIndex((stop) => stop.id) + 1 || 1}
           defaultValue={activeRoute.stopsArr.length}
           className="float-end"
           style={{ width: "3em"}}
-          onChange={(e) => handleStopCountChange(e.target.value, index)}
+          onChange={(e) => {
+            e.target.value = e.target.value.replace(/[^0-9]/g, '')
+            if (!e.target.value) e.target.value = activeRoute.stopsArr.findLastIndex((stop) => stop.id) + 1 || 1
+            handleStopCountChange(e.target.value, index)
+          }}
         />
       </caption>
       <thead>
@@ -83,7 +93,7 @@ export default function BusStopTableEdit({
                 className="btn btn-outline-secondary btn-small p-0"
               />
               <CreatableSelect
-                options={allStops.map((x) => ({ value: x, label: x.name }))}
+                options={allStops.map((x) => ({ value: x, label: x.name + (x.coords ? "(" + x.coords +")":"") }))}
                 value={{ label: stop.name, value: stop }}
                 onChange={(newValue) =>
                   handleChange(
@@ -102,14 +112,13 @@ export default function BusStopTableEdit({
             {i < activeRoute.stopsArr.length - 1 ? (
               <td className="vertical-center">
                 <input
-                  key={stop.id}  //without this key, weird rendering, doublicates
+                  key={stop.id}  //without this key, weird rendering, douplicates
                   defaultValue={activeRoute.distanceMetersList[i]}
-                  onChange={(e) =>
-                    handleChange(
-                      e.target.value,
-                      ["routes", index, "distanceMetersList"],
-                      i
-                    )
+                  onChange={(e) => {
+                    e.target.value = e.target.value.replace(/[^0-9]/g, '')
+                    handleChange(e.target.value, ["routes", index, "distanceMetersList"], i)
+                  }
+                    
                   }
                   style={{ maxWidth: "77px" }}
                 />

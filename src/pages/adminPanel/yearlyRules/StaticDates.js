@@ -12,7 +12,7 @@ export default function StaticDates({rule, selectedRule, handleChange, handleAdd
             <span className="input-group-text fs-4" id="basic-addon1">Name:</span>
             <input type="text" 
             className={`form-control fs-4" ${validationOn && !rule.periodName ? "my-valid-border" : ""} `}
-            placeholder="Username" aria-label="Username" aria-describedby="basic-addon1" 
+            placeholder="Rule name..." aria-label="Rule name..." aria-describedby="basic-addon1" 
             defaultValue={rule.periodName}  key={rule.id}
             onChange={(e) => handleChange(e.target.value, [], "periodName", 100)}
             />

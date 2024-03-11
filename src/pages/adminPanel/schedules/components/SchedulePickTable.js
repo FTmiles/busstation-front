@@ -57,8 +57,9 @@ export default function SchedulePickTable({data, className, handleNewSchedule, s
                             ))
                     }
                         <div>
-                        <FontAwesomeIcon className='btn ' icon={faPlus} onClick={handleNewSchedule}
-                        />
+                        <button className="btn btn-light" onClick={handleNewSchedule}>
+                    <FontAwesomeIcon icon={faPlus} /></button>
+                     
                         </div>
         </div>  
     )

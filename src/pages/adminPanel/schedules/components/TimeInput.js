@@ -56,17 +56,19 @@ const TimeInput = ({defaultValue, handleChange, path, inputIndex, className}) =>
     if (validate(input)) {
         handleChange(input, path , inputIndex)
     }
+    else 
+    handleChange(null, path , inputIndex)
     
   };
 
 
-  const handleBlur = (e) => {
-    let input = e.target.value;
-    if (!validate(input)) {
-      setInvalidFormat(true);
-      handleChange(null, path , inputIndex)
-    }
-  };
+  // const handleBlur = (e) => {
+  //   let input = e.target.value;
+  //   if (!validate(input)) {
+  //     setInvalidFormat(true);
+  //     handleChange(null, path , inputIndex)
+  //   }
+  // };
 
   //passes validation = true, fails = false
   const validate = (input) => /^\d{2}:\d{2}$/.test(input)
@@ -79,7 +81,7 @@ const TimeInput = ({defaultValue, handleChange, path, inputIndex, className}) =>
       value={time}
       maxLength="5" // Restrict input to 5 characters (HH:MM)
       onChange={handleChangeLocal}
-      onBlur={handleBlur}
+      // onBlur={handleBlur}
       placeholder="HH:MM"
       className={`${invalidFormat ? 'border border-danger' : ''} ${className}` }
 
