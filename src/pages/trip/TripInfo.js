@@ -1,19 +1,62 @@
+import { lineInfoLabel } from "utils/myUtils";
 
-export default function TripInfo(props){
-    let data = props.data;
+const daysOfWeek = (runsOnWeekly) => {
+    const week = [["MONDAY", "M"], ["TUESDAY", "T"], ["WEDNESDAY", "W"], ["THURSDAY", "T"], ["FRIDAY", "F"], ["SATURDAY", "S"], ["SUNDAY", "S"]];
+    let days = <div className='d-flex justify-content-between'> 
+    {
+        week.map((day, i) => (
+            <span style={{fontSize:"0.8rem"}} key={i}
+            className={`rounded-1  ${runsOnWeekly.includes(day[0])? "bg-dark" : "my-schedule-picker-faded"} text-white p-1`}>{day[1]}</span>        
+            ))
+    }            
+
+    
+    </div>
+    return days;
+}
+
+export default function TripInfo({lineInfo, data}){
+    // lineInfoLabel
 
 
     return (
         <div>
-            <p>{data.lineName}</p>
-            <p>{data.routeStart}</p>
-            <p>{data.routeEnd}</p>
-            <p>{data.via}</p>
-            <p>{data.operator}</p>
-            <p>{data.anykStationPlatform}</p>
-            <p>{data.price}</p>
-            <p>{data.routeType}</p>
-            <p>{data.timeConstraintsDescription}</p>
+            <table className="table table-light" >
+                <thead></thead>
+                <tbody>
+                    <tr><td>Line</td><td><span className="position-relative">{lineInfo.name} <span class="badge text-bg-secondary">More schedules</span></span></td></tr>
+                    <tr><td>Operator</td><td>{lineInfo.operator}</td></tr>
+                    <tr><td>Anyksciai AS platform</td><td>{lineInfo.anykStationPlatform}</td></tr>
+                </tbody>
+            </table>
+
+            <table className="table ">
+                <thead>
+                    <tr>
+                        <th colSpan={2} className="text-center">Time constraints</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Runs on public holidays</td><td>{data.runsOnPublicHolidays ? "Yes" : "No"}</td></tr>
+                    <tr><td>Days of week</td><td>{daysOfWeek(data.runsOnWeekly)}</td></tr>
+                    {
+                        data.runsOnYearly.periodName != "Apskritus metus" &&
+                        <tr><td>Only at</td><td>{data.runsOnYearly.periodName}</td></tr>
+                    }
+                    
+                </tbody>
+            </table>
+
+
+            {/* <p>{lineInfo.lineName}</p>
+            <p>{lineInfo.routeStart}</p>
+            <p>{lineInfo.routeEnd}</p>
+            <p>{lineInfo.via}</p>
+            <p>{lineInfo.operator}</p>
+            <p>{lineInfo.anykStationPlatform}</p>
+            <p>{lineInfo.price}</p>
+            <p>{lineInfo.routeType}</p>
+            <p>{lineInfo.timeConstraintsDescription}</p> */}
         </div>
     );
 

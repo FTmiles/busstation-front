@@ -9,12 +9,28 @@ const API_URL = "";
 
 
 //Public APIs
-export const getHomeScheduleItems = (date) => {
-    return axios.get(API_ROOT_PATH + `/scheduleItem/home/${date}`)
+export const apiGetHomeScheduleItems = (queryDate, queryDir, queryStop, bstopTo) => {
+  // if (bstopTo)
+    return axios.get(API_ROOT_PATH + `/scheduleItem/home-from?qdate=${queryDate}&qdir=${queryDir}&qbstopfrom=${queryStop}&qbstopto=${bstopTo}`)
+  // else
+    // return axios.get(API_ROOT_PATH + `/scheduleItem/home-fromto?qdate=${queryDate}&qdir=${queryDir}&qbstopfrom=${queryStop}`)  
 }
 
 export const getTripInfo = (tripId) => {
     return axios.get(API_ROOT_PATH + `/scheduleItem/singleTrip/${tripId}` )
+}
+
+export const apiGetSelectBusStopSearchOptions = (query) => {
+  return axios.get(`${API_ROOT_PATH}/busstop/search?str=${query}`)
+}
+
+export const apiGetBusStopDtoFromAndTo = (from, to) => {
+  console.log("calling get2 API")
+  return axios.get(`${API_ROOT_PATH}/busstop/get2?fromId=${from}&toId=${to}`)
+}
+
+export const apiGetScheduleAndSingleTrip = (tripId) => {
+  return axios.get(`${API_ROOT_PATH}/scheduleItem/schedule-by-tripid?tripID=${tripId}`)
 }
 
 //Authorized APIs

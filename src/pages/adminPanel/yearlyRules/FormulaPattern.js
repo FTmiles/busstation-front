@@ -6,6 +6,7 @@ import DatePick from './DatePick';
 const occurencies = [{val:1, label:"first"}, {val:2, label:"second"}, {val:3, label:"third"}, {val:4, label:"fourth"}, {val:5, label:"fifth"}]
 const daysOfWeek = [{val:"MONDAY", label:"Monday"}, {val:"TUESDAY", label:"Tuesday"}, {val:"WEDNESDAY", label:"Wednesday"}, {val:"THURSDAY", label:"Thursday"}, {val:"FRIDAY", label:"Friday"}, {val:"SATURDAY", label:"Saturday"}, {val:"SUNDAY", label:"Sunday"}]
 
+
 export default function StaticDates({rule, selectedRule, handleChange, handleAddNewPatternParams, handleDeletePatternParams, validationOn}){
 
     

@@ -9,14 +9,14 @@ import FormulaPattern from "./FormulaPattern";
 let typingDebounce = null;
 let newId = -8331;
 let timeoutId;
-const getEmptyRule = (type) => ({id: newId--, pattern1Params: [], timePeriods: [], typeOfYearlyRule: type })
+const getEmptyRule = () => ({id: newId--, pattern1Params: [], timePeriods: [] })
  
 const getEmptyDateRange = () => ({id: newId--, startMonth: null, startDay: null, endMonth: null, endDay:null})
 const getEmptyPatternParam = () => ({dayOfWeek: null, id: newId--, nthOccurenceEachMonth: null})
 
 export default function  YearlyMain() {
     const [data, setData] = useState();
-    const [selectedRule, setSelectedRule] = useState({index:0, type:null});
+    const [selectedRule, setSelectedRule] = useState(0);
     const [validationOn, setValidationOn] = useState(false);
     const [showTopBarMsg, setShowTopBarMsg] = useState();
     const [schedules, setSchedules] = useState();
@@ -26,9 +26,6 @@ export default function  YearlyMain() {
             setData(response.data.rules)
             setSchedules(response.data.schedules)
             
-            //sort().reverse()  - makes static be at index 0 - Static dates
-            if ( (response.data.rules[Object.keys(response.data.rules).sort().reverse()[0]]).length > 0   )
-                setSelectedRule({index:0, type:Object.keys(response.data.rules).sort().reverse()[0]})
         })
     },[])
 
@@ -38,9 +35,8 @@ export default function  YearlyMain() {
         console.log("schedules", schedules);
     }
 
-const handleSelectRule = (index, ruleType) => {
-    setSelectedRule({index: index, type:ruleType})
-    console.log("type",ruleType)
+const handleSelectRule = (index) => {
+    setSelectedRule(index)
 }
 
 const handleChange = (newValue, path, key, debounceTime=200) =>{
@@ -49,7 +45,7 @@ const handleChange = (newValue, path, key, debounceTime=200) =>{
   
         setData(ogData => {
             const dataCopy = JSON.parse(JSON.stringify(ogData));
-            let currentStep = dataCopy[selectedRule.type][selectedRule.index]; //walk the path, deeper and deeper
+            let currentStep = dataCopy[selectedRule]; //walk the path, deeper and deeper
 
             if (path !== null && path !== undefined){
                 for (let step of path)
@@ -67,16 +63,17 @@ const handleAddNewDate = () => {
     setData(og => {
         const dataCopy = JSON.parse(JSON.stringify(og));
         const empty = getEmptyDateRange();
-        dataCopy[selectedRule.type][selectedRule.index].timePeriods.push(empty)
+        dataCopy[selectedRule].timePeriods.push(empty)
         return dataCopy;
     })
 }
 
 const handleAddNewPatternParams = () => {
+    console.log("beginning and end");
     setData(og => {
         const dataCopy = JSON.parse(JSON.stringify(og));
         const empty = getEmptyPatternParam();
-        dataCopy[selectedRule.type][selectedRule.index].pattern1Params.push(empty)
+        dataCopy[selectedRule].pattern1Params.push(empty)
         return dataCopy;
     })
 
@@ -85,8 +82,8 @@ const handleAddNewPatternParams = () => {
 const handleDeletePatternParams = (delParams) => {
     setData(og => {
         const dataCopy = JSON.parse(JSON.stringify(data))
-        dataCopy[selectedRule.type][selectedRule.index].pattern1Params = 
-                                dataCopy[selectedRule.type][selectedRule.index].pattern1Params
+        dataCopy[selectedRule].pattern1Params = 
+                                dataCopy[selectedRule].pattern1Params
                                 .filter(params => params.id !== delParams.id)
         return dataCopy;
     })
@@ -95,20 +92,18 @@ const handleDeletePatternParams = (delParams) => {
 const handleDeleteDate = (delDate) => {
     setData(og => {
         const dataCopy = JSON.parse(JSON.stringify(data))
-        dataCopy[selectedRule.type][selectedRule.index].timePeriods = 
-                                dataCopy[selectedRule.type][selectedRule.index].timePeriods
+        dataCopy[selectedRule].timePeriods = 
+                                dataCopy[selectedRule].timePeriods
                                 .filter(date => date.id !== delDate.id)
         return dataCopy;
     })
 }
 
-const handleAddNewRule = (type) => {
-    setData(og => ({...og, 
-        [type]: [...og[type], getEmptyRule(type)] 
-    }))
+const handleAddNewRule = () => {
+    setData(og => ([...og, getEmptyRule() ]))
     //adjust selected item
     // setSelectedRule(og => ({...og, "index": data[type].length}))
-    setSelectedRule(og => ({type:type, "index": data[type].length}))
+    setSelectedRule(data.length)
 }
 
 
@@ -130,23 +125,20 @@ const handleSubmit = () => {
 
     //validation passed, calling post api
     setValidationOn(false)
-    //map negative IDs to null. only used in trips
-    const typeProp = {"Formula pattern":"pattern1Params", "Static dates":"timePeriods"}
-    const types = Object.keys(data);
 
-    types.forEach(type =>{
-        dataCopy[type].forEach(rule => {
-            if (rule.id < 0 ) rule.id = null;
-            let prop = typeProp[rule["typeOfYearlyRule"]]
-            rule[prop].forEach(dateRange => {
-                if (dateRange.id < 0) dateRange.id = null
-            })
+    //map negative IDs to null
+    dataCopy.forEach(rule => {
+        if (rule.id < 0 ) rule.id = null;
+        
+        rule.timePeriods.forEach(dateRange => {
+            if (dateRange.id < 0) dateRange.id = null
+        })
+        rule.pattern1Params.forEach(dateRange => {
+            if (dateRange.id < 0) dateRange.id = null
         })
     })
 
-    const combined = [...dataCopy["Formula pattern"], ...dataCopy["Static dates"]]
-    console.log("COMBINED >", combined)
-    apiPostYearlyRulesCombo(combined).then(response =>{
+    apiPostYearlyRulesCombo(dataCopy).then(response =>{
         setData(response.data)
         msgRun("Successfully saved to the database", "success", 3000)
     })
@@ -161,10 +153,8 @@ const msgRun = (msg, color, time) => {
 }
 
 const isAllDataValid = (data) => {
-    const types = Object.keys(data);
 
-    for (const type of types) {
-        for (const rule of data[type]) {
+        for (const rule of data) {
     
         if (!rule.periodName )
             return false;
@@ -180,34 +170,30 @@ const isAllDataValid = (data) => {
                 return false;
         }
     }
-}
+
 
     return true;
-}
+} 
 
 //------------------------------------------------------------------------
 
 const handleDelRule = () => {
-    setData(og => ({...og,
-        [selectedRule.type] : og[selectedRule.type].filter((rule, i) => selectedRule.index !== i)
-    }))
+    setData(og => (og.filter((rule, i) => selectedRule !== i)))
         //adjust current selection
-        const selectedBefore = selectedRule.index;
-        const ogLength = data[selectedRule.type].length;
+        const selectedBefore = selectedRule;
+        const ogLength = data.length;
 
         if (ogLength <= 1) 
-            setSelectedRule(og => ({type:null, index:0}));
+            setSelectedRule(0);
         else if (ogLength - 1 === selectedBefore) 
-            setSelectedRule(og => ({...og, "index": og.index - 1}))
-        // if (ogLength - 1 === selectedBefore) 
-        //     setSelectedRule(og => ({...og, "index": og.index - 1}))
+            setSelectedRule(og => og - 1)
    
     
 }
 
 const getscheduleCount = () => {
-    if (data[selectedRule.type].length === 0) return 0
- return schedules.find(x => x.ruleId == data[selectedRule.type][selectedRule.index].id)?.schedules.length ?? "0"
+    if (data.length === 0) return 0
+ return schedules.find(x => x.ruleId == data[selectedRule].id)?.schedules.length ?? "0"
 }
 
 
@@ -235,13 +221,13 @@ const getscheduleCount = () => {
                 <div className="d-flex justify-content-between mb-2">
                     <div>
                         {
-                         selectedRule.type != null &&
+                         selectedRule != null &&
                         <button className="btn btn-danger" onClick={handleDelRule} disabled={getscheduleCount() > 0}>Del rule</button>
                         }
 
                         {
-                            data[selectedRule.type] && data[selectedRule.type][selectedRule.index]?.id > 0 && 
-                            <Link to={`/admin-panel/yearly-rules/${data[selectedRule.type][selectedRule.index].id}`} className="btn btn-Light">
+                            data[selectedRule] && data[selectedRule].id > 0 && 
+                            <Link to={`/admin-panel/yearly-rules/${data[selectedRule].id}`} className="btn btn-Light">
                                 Used by Schedules <span className="badge text-bg-secondary"> {getscheduleCount()} </span>
                             </Link>
                         }
@@ -250,18 +236,19 @@ const getscheduleCount = () => {
                     <button className="btn btn-success" onClick={handleSubmit}>Save</button>
                 </div>
                 {   
-                    selectedRule.type === "Static dates" && data[selectedRule.type].length > 0
+                    data[selectedRule]
                     &&
-                    <StaticDates rule={data[selectedRule.type][selectedRule.index]} selectedRule={selectedRule} handleChange={handleChange} 
-                    handleAddNewDate={handleAddNewDate} handleDeleteDate={handleDeleteDate} validationOn={validationOn} />
+                    <StaticDates rule={data[selectedRule]} selectedRule={selectedRule} handleChange={handleChange} 
+                    handleAddNewDate={handleAddNewDate} handleDeleteDate={handleDeleteDate} validationOn={validationOn} handleAddNewPatternParams={handleAddNewPatternParams} 
+                    handleDeletePatternParams={handleDeletePatternParams} data={data} />
                 }
-                {
+                {/* {
                     selectedRule.type === "Formula pattern" && data[selectedRule.type].length > 0
                     &&
                     <FormulaPattern rule={data[selectedRule.type][selectedRule.index]} selectedRule={selectedRule} 
                     handleChange={handleChange} handleAddNewPatternParams={handleAddNewPatternParams} handleDeletePatternParams={handleDeletePatternParams} 
                     validationOn={validationOn} />
-                }
+                } */}
 
             </div>
             </div> {/* row */}

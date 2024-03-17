@@ -43,3 +43,14 @@ export function hasEmptyFields(obj, exception) {
     price: "Price",
     routeType: "Route type"
   }
+
+  export function validateInteger(value) {
+    console.log("validating integer now_--", value);
+    // Check if the value is a valid integer
+    const intValue = parseInt(value);
+    console.log("validation returning value:", isNaN(intValue) ? "" : intValue);
+
+    return isNaN(intValue) ? "" : intValue;
+  }
+
+  export   const dateRegex = /^\d{4}-\d{2}-\d{2}$/;

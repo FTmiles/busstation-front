@@ -1,65 +1,53 @@
-import React, { useEffect, useState } from 'react';
-import { NavLink, Link } from 'react-router-dom';
-import { useNavigate  } from 'react-router-dom';
-import { dateToString } from 'utils/myUtils'; 
+import { NavLink, Link, useLocation  } from 'react-router-dom';
 
-  //https://reactdatepicker.com/
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css'; // Import CSS
+export default function Navbar({handleLogOut, admin, fetchUrlData}) {
 
-import AuthService from 'services/auth.service';
-
-const Navbar = () => {
-    const [selectedDate, setSelectedDate] = useState(new Date());
-    const [admin, setAdmin] = useState(undefined);
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const destinationUrl = (path) => `${path}?${queryParams.toString()}`;
 
 
-  useEffect(() => {
-    const user = AuthService.getCurrentUser();
-    if (user?.roles.includes("ROLE_ADMIN")) 
-      setAdmin(user)
-  },[])
-
-  const navigate = useNavigate();
-
- 
-  function handleDateChange(date){
-    //router navigation
-        navigate(`/date/${dateToString(date)}`); 
-
-    //set datepicker date
-    setSelectedDate(date)
-  }
-
- const handleLogOut = () => {
-  AuthService.logout();
-  navigate("/");        //navigate("/profile");
-  window.location.reload();
- }
   return (
 
-    <div className='d-flex align-items-center pb-1'>
-            <NavLink className="btn btn-primary mx-2" onClick={()=>{setSelectedDate(new Date())}} to="/">Today</NavLink>
+<nav className="navbar navbar-expand-md bg-body-tertiary">
+  <div className="container-fluid">
+    <span className="navbar-brand">🚍</span>
+    <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span className="navbar-toggler-icon"></span>
+    </button>
+    <div className="collapse navbar-collapse justify-content-between" id="navbarNav">
+      <ul className="navbar-nav">
+        
+        <li className="nav-item">
+          <NavLink className="nav-link" to={destinationUrl("/")} >Timetable</NavLink>
+        </li>
+        
+        <li className="nav-item">
+          <NavLink className="nav-link" to={destinationUrl("/browse")}>Browse by line</NavLink>
+        </li>
 
-            
 
-              <div className="d-inline-block ms-2" >
-                <DatePicker 
-                  name='datePicker-linterNeedsNameOrId'
-                  selected={selectedDate}
-                  onChange={(date) => handleDateChange(date)}
-                  withPortal
-                  portalId="root-portal"
-                />
-              </div>
-              {admin && <>
-                  <NavLink className="btn btn-secondary ms-auto" to="/admin-panel">Admin board</NavLink>
-                  <Link onClick={handleLogOut} className="btn btn-secondary mx-2"> Log out</Link>
+        </ul>
+        <ul className="navbar-nav">
+        {admin && <>
+              <li className="nav-item">
+                  <NavLink className="nav-link" to="/admin-panel">Admin board</NavLink>
+              </li>                
+              <li className="nav-item">  
+                  <Link onClick={handleLogOut} className="nav-link"> Log out</Link>
+              </li>                  
                 </>
               }
-</div>
-   
+          </ul>
+        </div>
+
+
+    
+      
+
+  </div>
+</nav>
+
   );
 };
 
-export default Navbar;

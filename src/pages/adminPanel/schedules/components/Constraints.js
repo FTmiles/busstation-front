@@ -40,7 +40,7 @@ const handleChangeWeekDays = (e) => {
                         onChange={(e) => handleChange(e.target.value, [] , "runsOnPublicHolidays", 0)} />
                         No
                     </label>
-                    </div>
+                </div>
                 
                 <div className="form-check d-inline-block">
                     <label className="form-check-label ps-3">
@@ -83,16 +83,10 @@ const handleChangeWeekDays = (e) => {
             onChange={(e) => handleChange(e.target.value, [] , "runsOnYearlyId", 0)} >
             {schedule.runsOnYearlyId ?? <option value="" key={-123}></option>}
             {
-                Object.keys(yearlyOptions).sort().reverse().map((category, index) => (
-                <optgroup label={category} key={index}>
-                    {
-                        yearlyOptions[category].map((option, index) => (
-                            <option value={option.id} className="" key={index}>
-                                {option.periodName}
-                                </option>
-                        ))
-                    }
-                </optgroup>                
+                yearlyOptions.map((option, index) => (
+                    <option value={option.id} className="" key={index}>
+                        {option.periodName}
+                        </option>
                 ))
             }
             </select>

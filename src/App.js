@@ -15,6 +15,8 @@ import Login from "authComponents/Login";
 import SchLines from "pages/adminPanel/schedules/SchLines";
 import SchMain from "pages/adminPanel/schedules/SchMain";
 import SchedulesByRule from "pages/adminPanel/yearlyRules/SchedulesByRule";
+import BrowseMain from "pages/browse/BrowseMain";
+import ViewLineSchedules from "pages/browse/ViewLineSchedules";
 
 function App() {
   return (
@@ -26,6 +28,10 @@ function App() {
 
           <Route path="*" element={<NoPage />} />
           <Route path="/date/:date" element={<Home />} />
+          
+          <Route path="/browse" element={<BrowseMain />} />
+          <Route path="/browse/:lineId" element={<ViewLineSchedules />} />
+
           <Route path="admin-panel" element={<AdminPanel />}>
             <Route index element={<AdminWelcome />} />
 
