@@ -1,6 +1,6 @@
 import { NavLink, Link, useLocation  } from 'react-router-dom';
 
-export default function Navbar({handleLogOut, admin, fetchUrlData}) {
+export default function Navbar({admin}) {
 
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -9,7 +9,7 @@ export default function Navbar({handleLogOut, admin, fetchUrlData}) {
 
   return (
 
-<nav className="navbar navbar-expand-md bg-body-tertiary">
+<nav className="navbar navbar-expand" >
   <div className="container-fluid">
     <span className="navbar-brand">🚍</span>
     <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -19,11 +19,11 @@ export default function Navbar({handleLogOut, admin, fetchUrlData}) {
       <ul className="navbar-nav">
         
         <li className="nav-item">
-          <NavLink className="nav-link" to={destinationUrl("/")} >Timetable</NavLink>
+          <NavLink className="nav-link text-light" to={destinationUrl("/")} >Timetable</NavLink>
         </li>
         
         <li className="nav-item">
-          <NavLink className="nav-link" to={destinationUrl("/browse")}>Browse by line</NavLink>
+          <NavLink className="nav-link text-light" to={destinationUrl("/browse")}>Browse by line</NavLink>
         </li>
 
 
@@ -33,9 +33,7 @@ export default function Navbar({handleLogOut, admin, fetchUrlData}) {
               <li className="nav-item">
                   <NavLink className="nav-link" to="/admin-panel">Admin board</NavLink>
               </li>                
-              <li className="nav-item">  
-                  <Link onClick={handleLogOut} className="nav-link"> Log out</Link>
-              </li>                  
+                
                 </>
               }
           </ul>

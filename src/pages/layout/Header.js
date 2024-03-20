@@ -1,6 +1,6 @@
 import Navbar from "./Navbar.js";
 import React, { useEffect, useState } from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import { NavLink, Link, useLocation } from 'react-router-dom';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { dateRegex, dateToString, validateInteger } from 'utils/myUtils'; 
   //https://reactdatepicker.com/
@@ -32,8 +32,11 @@ export default function Header() {
     const [admin, setAdmin] = useState(undefined);
     
     const [searchParams] = useSearchParams();
-    console.log("Header running");
-    
+   
+    const location = useLocation();
+    const currentPath = location.pathname;
+
+
 const logState = () => {
   console.log("selectedDate > ", selectedDate);
   console.log("busDir > ", busDir);
@@ -41,7 +44,6 @@ const logState = () => {
   console.log("bstopTo > ", bstopTo);
 }
 
-  // useEffect(()=> {if(bstopFrom?.value !== 1) setBstopTo(null) } ,[bstopFrom] )
 
   useEffect(() => {
     const user = AuthService.getCurrentUser();
@@ -65,6 +67,7 @@ const logState = () => {
       const queryDir = searchParams.get('dir');
       const queryDate = searchParams.get('date');
       
+      //when no URL params, set FROM to response.data[0] from select search options
       if (!qBstopFrom && !qbstopTo && !queryDir && !queryDate) {
         defaultOptionsPromise.then(response => {
           if (response.data.length > 0) setBstopFrom(response.data[0])
@@ -75,7 +78,6 @@ const logState = () => {
           apiGetBusStopDtoFromAndTo(bstopInteger, validateInteger(qbstopTo)).then(response => {
           setBstopFrom(response.data.from)
           setBstopTo({...response.data.to, "value": response.data.to.value === null ? "" : response.data.to.value})
-          console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
         })
 
         
@@ -88,8 +90,6 @@ const logState = () => {
       setSelectedDate(new Date(queryDate))
     else 
     setSelectedDate(new Date())
-
-    console.log("Header - extract URL params, validate set")
     } //ends fetch URL data function
 
 
@@ -99,10 +99,8 @@ const logState = () => {
     }, [bstopFrom])
 
   useEffect(() => {
-    console.log("EFFECTIVE CRP")
     if (beforeUserInteraction) return;
 
-    console.log("reacting to PARAM changes", selectedDate)
       // Construct your search parameters
       const queryParams = new URLSearchParams();
       queryParams.append('from', bstopFrom?.value ?? "");
@@ -116,14 +114,10 @@ const logState = () => {
 
 
 
- const handleLogOut = () => {
-  AuthService.logout();
-  navigate("/");        //navigate("/profile");
-  window.location.reload();
- }
 
 
-  //seems that for default options if in main function which is async, then need to "return", but when inside inner function then callback is needed
+
+  //seems that for default select options if in main function which is async, then need to "return" data instead of callback, but when inside inner function then callback is needed
     const selectLoadOptions =  (inputValue, callback, second) => {
       clearTimeout(debounceTimeout);
       if (inputValue === "") {
@@ -149,21 +143,23 @@ const logState = () => {
 
 
   return (
-    <>
-    <Navbar handleLogOut={handleLogOut} admin={admin} fetchUrlData={fetchUrlData} />
+    <div className="my-header">
+    <Navbar  admin={admin} fetchUrlData={fetchUrlData} />
 
-    <header className="container-fluid"  style={{ background: "lightsalmon" }} onDoubleClick={logState}>
+    <header className="container-fluid"  onDoubleClick={logState}>
      
       <div className="row p-4 gy-3 pb-3" >
-          <div className="col-md-6 border border-primary">
+          <div className="col-md-6">
           <AsyncSelect cacheOptions defaultOptions loadOptions={selectLoadOptions} value={bstopFrom} 
             onChange={(update)=> {
               setBstopFrom(update)
               beforeUserInteraction = false;
-              }} name="busStopSelect" />
+              }} name="busStopSelect" isClearable />
           </div>
-
-          <div className="col-md-6 border border-primary">
+      {
+         !currentPath.startsWith("/browse") &&
+        <>
+          <div className="col-md-6">
           <AsyncSelect cacheOptions defaultOptions loadOptions={(query, callback) => selectLoadOptions(query, callback, true)} value={bstopTo} isDisabled={bstopFrom?.value != 1}
             onChange={(update)=> {
               setBstopTo(update)
@@ -173,7 +169,7 @@ const logState = () => {
           </div>
 
 
-          <div className="col-md-6 border border-primary d-flex gap-2 align-items-center ">
+          <div className="col-md-6 d-flex gap-2 align-items-center ">
           <button className="btn btn-primary" onClick={()=>{{
             beforeUserInteraction = false;
             setSelectedDate(new Date())
@@ -193,34 +189,39 @@ const logState = () => {
                
 
       
-
+{/*  Radio buttons - direction */}
           <div className="col-md-6 align-items-center d-flex">
-          
-          <div className="form-check form-check-inline">
-              <label className="form-check-label">{bstopFrom?.value === 1 ? "City bus" : "Toward Anyksciai"}
-                <input className="form-check-input" type="radio" name="busDirectionOptions" checked={busDir == "City bound"}
-                value="City bound" onChange={(e) => {
-                  beforeUserInteraction = false;
-                  setBusDir(e.target.value)
-                  if (e.target.value === "City bound" && bstopFrom?.value === 1)
-                    setBstopTo(null)
-                }} />
-              </label>
+            {/* first */}
+              <div className="form-check form-check-inline">
+                  <label className="form-check-label">{bstopFrom?.value === 1 ? "City bus" : "Toward Anyksciai"}
+                    <input className="form-check-input" type="radio" name="busDirectionOptions" checked={busDir == "City bound"}
+                    value="City bound" onChange={(e) => {
+                      beforeUserInteraction = false;
+                      setBusDir(e.target.value)
+                      if (e.target.value === "City bound" && bstopFrom?.value === 1)
+                        setBstopTo(null)
+                    }} />
+                  </label>
+              </div>
+              {/* second */}
+              <div className="form-check form-check-inline">
+                  <label className="form-check-label">Going out
+                    <input className="form-check-input" type="radio" name="busDirectionOptions" checked={busDir == "Out bound"} 
+                    value="Out bound" onChange={(e) => {
+                      setBusDir(e.target.value)
+                      beforeUserInteraction = false;
+                      }} />
+                  </label>
+              </div>
           </div>
-          <div className="form-check form-check-inline">
-              <label className="form-check-label">Going out
-                <input className="form-check-input" type="radio" name="busDirectionOptions" checked={busDir == "Out bound"} 
-                 value="Out bound" onChange={(e) => {
-                  setBusDir(e.target.value)
-                  beforeUserInteraction = false;
-                  }} />
-              </label>
-          </div>
+        </>
 
-          </div>
+
+      }
+        
           </div>
     </header>
-    </>
+    </div>
   );
 }
 

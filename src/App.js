@@ -30,7 +30,8 @@ function App() {
           <Route path="/date/:date" element={<Home />} />
           
           <Route path="/browse" element={<BrowseMain />} />
-          <Route path="/browse/:lineId" element={<ViewLineSchedules />} />
+          <Route path="/browse/:lineId/:schedId/:tripId" element={<ViewLineSchedules />} />
+          <Route path="/browse/:lineId/" element={<ViewLineSchedules />} />
 
           <Route path="admin-panel" element={<AdminPanel />}>
             <Route index element={<AdminWelcome />} />

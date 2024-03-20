@@ -27,7 +27,6 @@ export default function LineTableRow({ row, isEvenRow }) {
         <td><b>{row.name}</b></td>
         <td>{row.routeStart}</td>
         <td>{row.routeEnd}</td>
-        <td className="d-none d-md-table-cell">{row.via}</td>
         <td onClick={(e) => handleExpand(e)}
         className="my-hover-effect text-center">
             <FontAwesomeIcon icon={faChevronDown} className={isExpanded?"expand-up":""} /></td>

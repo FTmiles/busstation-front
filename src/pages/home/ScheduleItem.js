@@ -1,4 +1,4 @@
-import { useLocation, useNavigate  } from 'react-router-dom';
+import { Link, useLocation, useNavigate  } from 'react-router-dom';
 
 
 const color = {
@@ -13,21 +13,15 @@ function ScheduleItem({item}) {
   const queryParams = new URLSearchParams(location.search);
   const destinationUrl = (path) => `${path}?${queryParams.toString()}`;
   
-  const navigate = useNavigate();
-
-  const goToBus = () => {
-    navigate(destinationUrl(`/trip/${item.tripId}`)); 
-    
-  }
-
-
-    return (
-    <div title={item.lineName} style={{background:color[item.routeType]}}
-    className={`schedule-item rounded-3 p-1 mx-1 d-inline-block ${item.tooLate ? 'tooLate' : ''}`} 
-    onClick={goToBus} >
+  
+  
+  return (
+    <Link title={item.lineName} style={{background:color[item.routeType]}}
+      className={`schedule-item text-decoration-none text-dark rounded-3 p-1 mx-1 d-inline-block ${item.tooLate ? 'tooLate' : ''}`} 
+      to={destinationUrl(`/browse/${item.lineId}/${item.schedId}/${item.tripId}`)}>
            <span>{item.timeDepart.slice(0, 5)}</span>        <span>{item.name}</span>
   
-  </div>
+  </Link>
   );
 }
 

@@ -9,8 +9,6 @@ const daysOfWeek = (runsOnWeekly) => {
             className={`rounded-1  ${runsOnWeekly.includes(day[0])? "bg-dark" : "my-schedule-picker-faded"} text-white p-1`}>{day[1]}</span>        
             ))
     }            
-
-    
     </div>
     return days;
 }
@@ -24,7 +22,7 @@ export default function TripInfo({lineInfo, data}){
             <table className="table table-light" >
                 <thead></thead>
                 <tbody>
-                    <tr><td>Line</td><td><span className="position-relative">{lineInfo.name} <span class="badge text-bg-secondary">More schedules</span></span></td></tr>
+                    <tr><td>Line</td><td><span className="position-relative">{lineInfo.name} <span className="badge text-bg-primary">More schedules</span></span></td></tr>
                     <tr><td>Operator</td><td>{lineInfo.operator}</td></tr>
                     <tr><td>Anyksciai AS platform</td><td>{lineInfo.anykStationPlatform}</td></tr>
                 </tbody>
@@ -51,7 +49,6 @@ export default function TripInfo({lineInfo, data}){
             {/* <p>{lineInfo.lineName}</p>
             <p>{lineInfo.routeStart}</p>
             <p>{lineInfo.routeEnd}</p>
-            <p>{lineInfo.via}</p>
             <p>{lineInfo.operator}</p>
             <p>{lineInfo.anykStationPlatform}</p>
             <p>{lineInfo.price}</p>

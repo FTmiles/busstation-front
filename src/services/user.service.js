@@ -33,6 +33,14 @@ export const apiGetScheduleAndSingleTrip = (tripId) => {
   return axios.get(`${API_ROOT_PATH}/scheduleItem/schedule-by-tripid?tripID=${tripId}`)
 }
 
+export const apiGetLinesPreviewPublic = (lineId) => {
+  return axios.get(`${API_ROOT_PATH}/line/line-preview-withid-public`)
+}
+
+export const apiGetSchedulesByLineBrowse = (lineId) => {
+  return axios.get(`${API_ROOT_PATH}/scheduleItem/schedule-by-lineid-browse?lineId=${lineId}`)
+}
+
 //Authorized APIs
 
 //Holidays
@@ -76,9 +84,9 @@ export const apiGetLinesPreview = () => {
   return axios.get(`${API_ROOT_PATH}/line/preview`, {headers: authHeader()})
 }
 
-export const apiGetLineEager = (id) => {
-  return axios.get(`${API_ROOT_PATH}/line/line-eager?id=${id}`, {headers: authHeader()})
-}
+// export const apiGetLineEager = (id) => {
+//   return axios.get(`${API_ROOT_PATH}/line/line-eager?id=${id}`, {headers: authHeader()})
+// }
 
 export const apiPostLineEager = (data) => {
   return axios.post(`${API_ROOT_PATH}/line/post-line-full-dto`, data, {headers: authHeader()})

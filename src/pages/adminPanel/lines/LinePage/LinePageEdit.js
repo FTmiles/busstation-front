@@ -46,6 +46,9 @@ const logState = () => {
         // }
         if (!data.info.name || !data.info.routeStart || !data.info.routeEnd || !data.info.routeType) return
 
+        for (let note of data.info.customNotes) {
+            if (!note.noteKey || !note.noteValue) return
+        }
 
         for ( let route of data.routes) {
                 if (!route.routeNotes) return;
@@ -55,7 +58,14 @@ const logState = () => {
             }
         }
         //ends validation --
+        
+        //nulify IDs
+        data.info.customNotes.forEach(note => {
+            if (note.id < 0) note.id = null;
+        })
+
         //persist to DB
+        
         console.log("validation passed");
         apiPostLineEager(data)
             .then(response => navigate(`/admin-panel/lines/${response.data || ""}`))
@@ -189,6 +199,24 @@ const logState = () => {
         })
     }
 
+    const handleNewCustomNote = () => {
+        const empty = {id: nextId--, noteKey:"", noteValue:""}
+
+        setData(og => {
+            const info = JSON.parse(JSON.stringify(data.info));
+            info.customNotes.push(empty);
+            return {...og, info}
+        })
+    }
+
+    const handleDelCustomNote = (index) => {
+        setData(og => {
+            const info = JSON.parse(JSON.stringify(data.info));
+            info.customNotes.splice(index, 1)
+            return {...og, info}
+        })
+    }
+
  if (!data) return(<div>Loading ...</div>);
     return(
         <main onClick={logState}>
@@ -201,7 +229,7 @@ const logState = () => {
 
             <div>
 
-            <Link to={`/admin-panel/lines/${lineId}`}
+            <Link to={`/admin-panel/lines/${lineId ? lineId : ""}`}
                 className="btn btn-secondary mx-2"
             >Cancel</Link>
 
@@ -210,18 +238,20 @@ const logState = () => {
             >Save</button>
             </div>
             </div>
+
+
+{/* Line Info Box */}
             <div className="row">
                 <div className="col-12 col-md-6 order-md-2">
                 <table>
                     <thead>
                     </thead>
                     <tbody>
-                        {console.log(Object.keys(lineInfoLabel))}
                     {Object.keys(lineInfoLabel).map((infoKey, index) => (
                             <tr key={index}>
                               <td>{lineInfoLabel[infoKey]}</td>
                               <td> {infoKey === "routeType" ? 
-                                <select className="form-select" aria-label="Default select example"
+                                <select className="form-select" 
                                 style={{ border: validationOn && !data.info[infoKey]? "red 3px dashed" : "" }}
                                 onChange={e => handleChange(e.target.value, ["info"], infoKey)}
                                 defaultValue={data.info[infoKey]}>
@@ -229,7 +259,22 @@ const logState = () => {
                                 {data.routeTypeOptions.map((option, optionIndex)=>
                                     <option value={option} key={optionIndex}>{option}</option>
                                 )}
-                              </select> : 
+                              </select>
+                              : infoKey === "enabledSeasonalYearlyRuleFilter" 
+                              ? 
+                              
+                                [{label:"Yes", value:true}, {label:"No", value:false}].map(choice => (
+                                    <div className="form-check d-inline-block" key={choice.label}>
+                                    <label className="form-check-label ps-3">
+                                    <input className="form-check-input" type="radio" checked={data.info.enabledSeasonalYearlyRuleFilter == choice.value}
+                                        name="filterByRule" value={choice.value}
+                                        onChange={(e) => handleChange(e.target.value === 'true', ["info"] , "enabledSeasonalYearlyRuleFilter", 0)} />
+                                        {choice.label}
+                                    </label>
+                                </div>
+                                ))
+                              
+                              : 
                               <input className="" name="value" defaultValue={data.info[infoKey]}
                               style={{ border: validationOn && (infoKey == "routeEnd" || infoKey == "routeStart" || infoKey == "routeType")&& !data.info[infoKey]? "red 3px dashed" : "", overflowX: "auto", whiteSpace: "nowrap" }}
                               onChange={e => handleChange(e.target.value, ["info"], infoKey)} />                              
@@ -237,7 +282,30 @@ const logState = () => {
                                 </td>
                             </tr>                 
                         ))}
+                        {
+                            data.info.customNotes.length > 0 && 
+                            data.info.customNotes.map((note, index) => (
+                                <tr key={note.id}>
+                                    <td>
+                                        <input name="key" defaultValue={note.noteKey}
+                                        style={{ border: validationOn && !data.info.customNotes[index].noteKey  ? "red 3px dashed" : ""}}
+                                          onChange={e => handleChange(e.target.value, ["info", "customNotes", index], "noteKey")} />
+                                    </td>
+                                    <td>
+                                    <input name="value" defaultValue={note.noteValue} 
+                                    style={{ border: validationOn && !data.info.customNotes[index].noteValue  ? "red 3px dashed" : "", width: "calc(100% - 45px)"}}
+                                          onChange={e => handleChange(e.target.value, ["info", "customNotes", index], "noteValue")} />  
+                                    <FontAwesomeIcon className='btn px-1 ' icon={faTrashCan} onClick={()=>handleDelCustomNote(index)} />
+                                    </td>
+                                </tr>
+                            ))
+                        }
 
+                            <tr>
+                                <td colSpan={2}> 
+                                <FontAwesomeIcon className='btn px-4 ' icon={faPlus} onClick={()=>handleNewCustomNote()} />
+                                </td>
+                            </tr>
                     </tbody>
                 </table>
 

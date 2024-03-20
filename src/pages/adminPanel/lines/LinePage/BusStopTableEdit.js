@@ -49,6 +49,7 @@ export default function BusStopTableEdit({
         <input
           defaultValue={activeRoute.routeNotes }
           name="routeNotes"
+          placeholder="Via..."
           style={{ border: validationOn && !activeRoute.routeNotes? "red 3px dashed" : "" }}
           onChange={(e) =>
             handleChange(e.target.value, ["routes", index], "routeNotes")

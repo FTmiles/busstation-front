@@ -6,14 +6,12 @@ export default function BusStopTable({activeRoute,  showingDistance,  captionHei
 
     useEffect(()=>{
         const height = captionRef.current.getBoundingClientRect().height;
-        console.log("hello" + activeRoute.id);
         setCaptionHeights(og =>( {...og, [activeRoute.id]: height}))
     },[])
 
     useEffect(()=>{
         let maxHeight = Math.max(...Object.values(captionHeights))
         captionRef.current.style.height = `${maxHeight}px`;
-        console.log("captionHeights hitting id:", activeRoute.id);
     },[captionHeights])
 
 
@@ -25,7 +23,6 @@ export default function BusStopTable({activeRoute,  showingDistance,  captionHei
       }, [showingDistance])
 
 
-    console.log("from inners", activeRoute);
     if (!activeRoute) return "The line has no routes yet";
     return (
         <table className="table d-inline-block ms-4 caption-top my-no-color-background" style={{width:"auto"}}>

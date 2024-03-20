@@ -1,8 +1,16 @@
-import { NavLink, useMatch } from "react-router-dom"
+import { NavLink, Link, useMatch, useNavigate } from "react-router-dom"
+import AuthService from "services/auth.service";
 
 export default function SideBar(){
   // Use useMatch hook to check if the current route matches exactly
   const isExactAdminPanel = useMatch('/admin-panel');
+  const navigate = useNavigate();
+
+  const handleLogOut = () => {
+    AuthService.logout();
+    navigate("/");        
+    window.location.reload();
+   }
 
     return(
 
@@ -26,7 +34,7 @@ export default function SideBar(){
   <NavLink className="nav-link" to="/admin-panel/yearly-rules">Yearly rules</NavLink>
   </li>
   <li className="nav-item">
-    <a className="nav-link disabled" aria-disabled="true">Disabled</a>
+    <Link onClick={handleLogOut} className="nav-link"> Log out</Link>
   </li>
 </ul>
 

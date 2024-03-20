@@ -19,14 +19,13 @@ export default function LinePage(){
         apiGetLineFull(lineId)
         .then(response => {
             setData(response.data);
-            console.log("JSON from BACK",response.data);
         })
     }, [])
 
     const logState = () => {
-        console.log("caption heights: ",captionHeights);
-        console.log("max is ", Math.max(...Object.values(captionHeights))
-        )
+        console.log("data > ",data);
+        console.log("caption heights > ",captionHeights);
+
     }
     
     const handleRoutesClick = (id) => {
@@ -53,10 +52,10 @@ export default function LinePage(){
         )
     }
 
-
+ 
     if (!data) return (<div>Loading...</div>)
     return(
-        <main onClick={logState}>
+        <main onDoubleClick={logState}>
             <div className="d-flex flex-row justify-content-between align-items-center">
             <h1>{data.info.name}</h1>
             <div className="d-flex gap-3">
@@ -76,6 +75,8 @@ export default function LinePage(){
 
             </div>
             </div>
+
+            {/* Line Info box */}
             <div className="row">
                 <div className="col-12 col-md-6 order-md-2">
                 <table>
@@ -84,9 +85,17 @@ export default function LinePage(){
                     <tbody>
                         {Object.keys(lineInfoLabel).map((infoKey, index) => (
                             <tr key={index}>
-                              <td className="pe-3">{lineInfoLabel[infoKey]}</td><td>{data.info[infoKey]}</td>
+                              <td className="pe-3">{lineInfoLabel[infoKey]}</td><td>{typeof data.info[infoKey] === 'boolean' ? (data.info[infoKey]?"yes":"no") : data.info[infoKey]}</td>
                             </tr>                 
                         ))}
+                        {
+                            data.info.customNotes.map((note) => (
+                                <tr key={note.id}>
+                                    <td>{note.noteKey}</td>
+                                    <td>{note.noteValue}</td>
+                                </tr>
+                            ))
+                        }
                         
                     </tbody>
                 </table>
@@ -106,7 +115,7 @@ export default function LinePage(){
                     </ul>
                 </div>
             </div>
-            <div className="row" style={{background:secondRowColor}}>
+            <div className="row mt-2 pt-2" style={{background:secondRowColor}}>
                 <div className="col ">
                     {activeRouteIndexArr.map(index =>   (
                         <BusStopTable key={index}  activeRoute={data.routes[index]} showingDistance={showingDistance} activeRouteIndexArr={activeRouteIndexArr} captionHeights={captionHeights} setCaptionHeights={setCaptionHeights} />    

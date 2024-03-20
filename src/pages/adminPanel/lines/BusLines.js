@@ -22,7 +22,7 @@ export default function BusLine(){
         <table className="table ">
             <thead>
                 <tr>
-                    <th>Name</th><th>From</th><th>To</th><th className="d-none d-md-table-cell">Via</th><th>Actions</th>
+                    <th>Name</th><th>From</th><th>To</th><th>Actions</th>
                 </tr>
             </thead>
             <tbody>

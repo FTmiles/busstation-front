@@ -37,20 +37,37 @@ export function hasEmptyFields(obj, exception) {
   export const lineInfoLabel = {
     routeStart: "From",
     routeEnd: "To",
-    via: "Via",
     operator: "Operator",
     anykStationPlatform: "Anyksciu AS platform",
     price: "Price",
-    routeType: "Route type"
+    routeType: "Route type",
+    enabledSeasonalYearlyRuleFilter: "Yearly rule filter"
   }
 
   export function validateInteger(value) {
-    console.log("validating integer now_--", value);
     // Check if the value is a valid integer
     const intValue = parseInt(value);
-    console.log("validation returning value:", isNaN(intValue) ? "" : intValue);
 
     return isNaN(intValue) ? "" : intValue;
   }
 
   export   const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+
+
+
+ export const generateDaysOfWeek = (runsOnWeekly) => {
+    const week = [["MONDAY", "M"], ["TUESDAY", "T"], ["WEDNESDAY", "W"], ["THURSDAY", "T"], ["FRIDAY", "F"], ["SATURDAY", "S"], ["SUNDAY", "S"]];
+    let days = <div className='d-inline-flex justify-content-between'> 
+    {
+        week.map((day, i) => (
+            <div style={{fontSize:"0.8rem", width:"1rem", height:"1rem", lineHeight:"1rem", padding:"1.75px 3.25px"}} key={i}
+            className={`rounded-1 fw-bold ${runsOnWeekly.includes(day[0])? "bg-dark" : "my-schedule-picker-faded"} text-white d-flex justify-content-center align-items-center`}>{day[1]}</div>
+            ))
+    }            
+    </div>
+    return days;
+}
+
+export const sortByTime = (arr, path) => {
+    // arr.sort((a, b) => )
+}

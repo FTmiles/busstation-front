@@ -191,8 +191,7 @@ const isAllDataValid = (data) => {
     //constraints
         if (
             schedule.runsOnWeekly.length === 0 ||
-            !schedule.runsOnYearlyId ||
-            !schedule.timeConstraintsDescription
+            !schedule.runsOnYearlyId
             ) {
             return false;
         } 

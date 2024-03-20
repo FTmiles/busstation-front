@@ -1,3 +1,7 @@
+body{
+  overflow-y: scroll
+}
+
 input {
   overflow-x: auto!important
 }
@@ -15,6 +19,10 @@ input {
     font-size: min(10vw, 80px);
 }
 
+.my-header {
+  background: rgb(32,32,32);
+  background: linear-gradient(180deg, rgba(32,32,32,1) 0%, rgba(61,61,89,0.9626225490196079) 12%, rgba(255,255,255,1) 100%);
+      }
 
 
 .swap-dep-dest {
@@ -34,8 +42,9 @@ input {
 }
 
 
-.active {
-    font-weight: bold;
+
+.active  {
+  text-shadow: 0 0 1px white, 0 0 1px white; 
 }
 
 
@@ -47,8 +56,8 @@ input {
 
 /* animation swap sides */
 
-.flip-animation>div {
-    transition: transform 1s ease; /* Define transition for the transform property */
+.flip-animation {
+    transition: transform 0.2s ease-out; /* Define transition for the transform property */
   }
   
   .flipped {
@@ -164,13 +173,24 @@ input {
   url("data:image/svg+xml,%3Csvg viewBox='0 0 24.00 24.00' fill='none' xmlns='http://www.w3.org/2000/svg' transform='rotate(180)' stroke='%23000000' stroke-width='0.00024000000000000003'%3E%3Cg id='SVGRepo_bgCarrier' stroke-width='0'%3E%3C/g%3E%3Cg id='SVGRepo_tracerCarrier' stroke-linecap='round' stroke-linejoin='round'%3E%3C/g%3E%3Cg id='SVGRepo_iconCarrier'%3E%3Cpath d='M5.08884 12.7055C5.26942 12.2784 5.69482 12 6.16669 12H9V5C9 4.44772 9.44772 4 10 4H14C14.5523 4 15 4.44771 15 5V12H17.8333C18.3052 12 18.7306 12.2784 18.9112 12.7055C19.0917 13.1326 18.9919 13.6241 18.6583 13.951L12.825 19.6653C12.3693 20.1116 11.6307 20.1116 11.175 19.6653L5.34174 13.951C5.00808 13.6241 4.90826 13.1326 5.08884 12.7055Z' fill='%239e9e9e'/%3E%3C/g%3E%3C/svg%3E"); */
   background-image: url("data:image/svg+xml,%3Csvg fill='%23c7c7c7' version='1.1' id='Capa_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='-12.4 -12.4 148.77 148.77' xml:space='preserve' stroke='%23c7c7c7' stroke-width='0.0012397' transform='rotate(0)'%3E%3Cg id='SVGRepo_bgCarrier' stroke-width='0'%3E%3C/g%3E%3Cg id='SVGRepo_tracerCarrier' stroke-linecap='round' stroke-linejoin='round'%3E%3C/g%3E%3Cg id='SVGRepo_iconCarrier'%3E%3Cg%3E%3Cpath d='M51.802,96.062c2.801,2.801,6.5,4.2,10.2,4.2s7.4-1.399,10.2-4.2l47.3-47.3c5.5-5.5,6.101-14.6,0.8-20.3 c-5.6-6.1-15.1-6.3-20.899-0.5l-30.4,30.3c-3.899,3.9-10.2,3.9-14.1,0l-30.3-30.3c-5.801-5.8-15.301-5.7-20.9,0.5 c-5.3,5.7-4.8,14.8,0.8,20.3L51.802,96.062z'%3E%3C/path%3E%3C/g%3E%3C/g%3E%3C/svg%3E"),
                     url("data:image/svg+xml,%3Csvg fill='%23c7c7c7' version='1.1' id='Capa_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='-12.4 -12.4 148.77 148.77' xml:space='preserve' stroke='%23c7c7c7' stroke-width='0.0012397' transform='rotate(180)'%3E%3Cg id='SVGRepo_bgCarrier' stroke-width='0'%3E%3C/g%3E%3Cg id='SVGRepo_tracerCarrier' stroke-linecap='round' stroke-linejoin='round'%3E%3C/g%3E%3Cg id='SVGRepo_iconCarrier'%3E%3Cg%3E%3Cpath d='M51.802,96.062c2.801,2.801,6.5,4.2,10.2,4.2s7.4-1.399,10.2-4.2l47.3-47.3c5.5-5.5,6.101-14.6,0.8-20.3 c-5.6-6.1-15.1-6.3-20.899-0.5l-30.4,30.3c-3.899,3.9-10.2,3.9-14.1,0l-30.3-30.3c-5.801-5.8-15.301-5.7-20.9,0.5 c-5.3,5.7-4.8,14.8,0.8,20.3L51.802,96.062z'%3E%3C/path%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-
-
-
-  background-size: 45px 200px;
+  
+  background-size: 20px 80px, 20px 80px;
   background-repeat: repeat-y;
   background-position: left 0, right 0;
+  
 }
+
+.my-arrow-background2 {
+ 
+  background-image: url("data:image/svg+xml,%3Csvg fill='%23c7c7c7' version='1.1' id='Capa_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='-12.4 -12.4 148.77 148.77' xml:space='preserve' stroke='%23c7c7c7' stroke-width='0.0012397' transform='rotate(180)'%3E%3Cg id='SVGRepo_bgCarrier' stroke-width='0'%3E%3C/g%3E%3Cg id='SVGRepo_tracerCarrier' stroke-linecap='round' stroke-linejoin='round'%3E%3C/g%3E%3Cg id='SVGRepo_iconCarrier'%3E%3Cg%3E%3Cpath d='M51.802,96.062c2.801,2.801,6.5,4.2,10.2,4.2s7.4-1.399,10.2-4.2l47.3-47.3c5.5-5.5,6.101-14.6,0.8-20.3 c-5.6-6.1-15.1-6.3-20.899-0.5l-30.4,30.3c-3.899,3.9-10.2,3.9-14.1,0l-30.3-30.3c-5.801-5.8-15.301-5.7-20.9,0.5 c-5.3,5.7-4.8,14.8,0.8,20.3L51.802,96.062z'%3E%3C/path%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-size: 20px 100%;
+  background-repeat: no-repeat;
+  background-position: 50%;
+  border: 0;
+  position: relative;
+  transform: translateY(50%);
+}
+
 
 .table.my-arrow-background td {
   background: none;
@@ -183,8 +203,81 @@ input {
   border: none;
 }
 
+/* my grid for trip */
+
+
+.mygrid-menu { grid-area: menu; }
+.mygrid-info { grid-area: info; }
+.mygrid-list { grid-area: list; }
+
+
+@media (min-width: 768px) {
+  .mygrid-container {
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    grid-template-rows: 0fr auto; 
+    gap: 2em 2em;
+    grid-template-areas: 
+      "menu list"
+      "info list"; 
+  }}
+
+/* Bus stop list arrows and bubbles */
+
+
+.busStopList * {
+  box-sizing: border-box;
+}
+
+
+.busStopList ol {
+padding:0;
+display: flex;
+flex-direction: column;
+}
+
+.busStopList li {
+position: relative;
+display: flex;
+align-items: center;
+margin: 8px 0;
+
+}
 
 
 
+.busStopList .ind-num {
+position: relative;
+display: flex;
+justify-content: center;
+align-items: center;
+width: 25px;
+height: 25px;
+margin-right: 5px;
+border-radius: 50%;
+border: 1px solid #19198f;
+color: #19198f;
+background: white;
+}
 
+.busStopList li:not(:last-of-type) .ind-num::before {
+content: '';
+position: absolute;
+bottom: -40%;
+height: 40%;
+width: 8px;
+background: #19198f;
+clip-path: polygon(0 0, 100% 0, 100% 50%, 50% 100%, 0 50%);
+}
+
+.busStopList li:not(:first-of-type) .ind-num::after {
+content: '';
+position: absolute;
+top: -45%;
+height: 45%;
+width: 8px;
+clip-path: polygon(0 0, 50% 40%, 100% 0, 100% 100%, 0 100%);
+background: #19198f;
+z-index: -12;
+}
 

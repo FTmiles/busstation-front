@@ -33,7 +33,6 @@ const handleChangeWeekDays = (e) => {
                 <p className="fw-bold">Runs on public holidays:</p>
                 
                 <div className="form-check d-inline-block">
-                    {console.log("fucccc", schedule.runsOnPublicHolidays)}
                     <label className="form-check-label ps-3">
                     <input className="form-check-input" type="radio" checked={schedule.runsOnPublicHolidays == false || schedule.runsOnPublicHolidays == "false"}
                         name="runsOnHolidays" value={"false"}
@@ -96,7 +95,7 @@ const handleChangeWeekDays = (e) => {
             <div className={`mt-4`}>
                 <p className="fw-bold">In human language:</p>
                 <textarea key={schedule.id} placeholder="Describe..." 
-                className={`form-control ${validationOn && !schedule.timeConstraintsDescription? "my-valid-border" : ""}`} 
+                className={`form-control`} 
                  defaultValue={schedule.timeConstraintsDescription}  
                  onChange={(e) => handleChange(e.target.value, [] , "timeConstraintsDescription")}  />
                         
