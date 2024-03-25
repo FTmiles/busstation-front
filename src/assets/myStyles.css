@@ -89,6 +89,7 @@ input {
 
 .my-hover-effect:hover {
     background-color: #e9e9e9;
+    transition: 0.1s ease-in;
   }
 
 
@@ -281,3 +282,11 @@ background: #19198f;
 z-index: -12;
 }
 
+
+/* no wrap ends with ellipsis ... on large screen for show some bus stops on line page */
+.my-ellipsis {
+  max-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

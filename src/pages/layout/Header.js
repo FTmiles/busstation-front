@@ -1,12 +1,12 @@
 import Navbar from "./Navbar.js";
 import React, { useEffect, useState } from 'react';
 import { NavLink, Link, useLocation } from 'react-router-dom';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
 import { dateRegex, dateToString, validateInteger } from 'utils/myUtils'; 
   //https://reactdatepicker.com/
   import DatePicker from 'react-datepicker';
   import 'react-datepicker/dist/react-datepicker.css'; // Import CSS
-  import config from "config";
+
   
   import AsyncSelect from "react-select/async";
 
@@ -30,7 +30,8 @@ export default function Header() {
     const [bstopTo, setBstopTo] = useState();
 
     const [admin, setAdmin] = useState(undefined);
-    
+    const {lineId} = useParams(); //to see if i'm inside single_line_view
+
     const [searchParams] = useSearchParams();
    
     const location = useLocation();
@@ -108,10 +109,13 @@ const logState = () => {
       queryParams.append('dir', busDir);
       queryParams.append('date', selectedDate.toISOString().split("T")[0]);
 
+      if (lineId) navigate(`/browse?${queryParams.toString()}`);
+      else
       // Use navigate to update the URL with the search parameters
       navigate({ search: `?${queryParams.toString()}` });
   },[bstopFrom, bstopTo,busDir, selectedDate])
 
+  //filters changed inside view_single_line_page, after filters change go back to browse
 
 
 

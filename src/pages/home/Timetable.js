@@ -1,7 +1,7 @@
 import ScheduleItem from "./ScheduleItem";
 import { useState, useEffect } from "react";
 
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { dateRegex, dateToString, validateInteger } from "utils/myUtils";
 
 import { useLocation } from 'react-router-dom';
@@ -20,7 +20,7 @@ export default function Timetable() {
   const [queryDate, setQueryDate] = useState();
 
   const [searchParams] = useSearchParams();
-
+  const [noSchedulesFound, setNoSchedulesFound] = useState(false);
 
 
   useEffect(()=>{
@@ -47,12 +47,15 @@ export default function Timetable() {
 useEffect(() => {
   if (!bstopFrom || !queryDir || !queryDate) return
 
-  console.log("one time !!")
   logState()
 
   apiGetHomeScheduleItems(queryDate, queryDir, bstopFrom, bstopTo)
     .then(
-      response => setData(response.data), 
+      response => {
+        setData(response.data)
+        if (response.data.length === 0 ) setNoSchedulesFound(true);
+        else (setNoSchedulesFound(false))
+      }, 
       error => setErrorMsg(error?.response?.data?.message || error.message || error.toString())
       )
 }, [queryDate, bstopFrom, queryDir, bstopTo]);
@@ -66,8 +69,12 @@ const logState = () => {
   console.log("queryDate > ", queryDate);
 }
 
-  let start = 6,
-    end = 23;
+  let start = 6 , end = 23;
+  //if earliest scheduled before 6am, then adjust "start"
+  let earliestScheduled = Math.min(   data.map(item => parseInt(item.timeDepart.slice(0,2)))  );
+  if (earliestScheduled && earliestScheduled < start) start = earliestScheduled;
+  let latestScheduled = Math.max(   data.map(item => parseInt(item.timeDepart.slice(0,2)))  );
+  if (latestScheduled && latestScheduled > end) end = latestScheduled;
 
   let range = new Array(end - start).fill(0).map((val, ind) => start + ind);
 
@@ -79,8 +86,30 @@ const logState = () => {
     };
   });
 
+const targetBusStop = () => {
+  if (queryDir === "Out bound") 
+    return bstopTo;
+  if (queryDir === "City bound")
+    return bstopFrom
+}
+
+const getUrlWhenNoSchedulesFound = () => {
+  const queryParams = new URLSearchParams(location.search);
+  console.log("QP", queryParams);
+  console.log("BS FROM > ", bstopFrom)
+  console.log("BS TO > ", bstopTo)
+  if (bstopFrom === 1 && bstopTo){
+    queryParams.set('from', bstopTo);
+    console.log("AAAAAAAAAAAAAAAAAAAAAAAAA")
+  }
+    
+  
+    return `/browse?${queryParams.toString()}`;
+}
+
   return (
     <main onClick={logState}>
+      {noSchedulesFound && <p>Nothing found for this day. Switch to browse page <Link to={getUrlWhenNoSchedulesFound()}> Click me</Link> -</p>}
       {errorMsg && <p className="alert alert-danger">{errorMsg}</p>}
       {range.map((r) => (
         <div key={r.hour}>

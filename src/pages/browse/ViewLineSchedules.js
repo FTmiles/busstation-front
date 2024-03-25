@@ -29,25 +29,23 @@ const validateDir = (dir) => {
         case 'City bound':
           return dir
           break;
-        case 'Circle':
-          return dir
-          break;
         default:
-          return "Out bound"
+          return 'Out bound'
       }
 }
 
 export default function ViewLineSchedules(){
+    const [searchParams] = useSearchParams();
     const [data, setData] = useState();
     const [line, setLine] = useState();
     const {lineId, schedId, tripId} = useParams();
-    const [dir, setDir] = useState();
+    const [dir, setDir] = useState(validateDir(searchParams.get('dir')));
     const [flipped, setFlipped] = useState(false);
     const [selectedSchedule, setSelectedSchedule] = useState(0);
     const [ruleFilter, setRuleFilter] = useState([]); //all checked values appear in the array, multiple selection
     const [allYearlyRules, setAllYearlyRules] = useState();
     
-    const [searchParams] = useSearchParams();
+    //query params, from header filters
     const [queryDate, setQueryDate] = useState(makeDateObjFromStrOrEmpty(searchParams.get('date')))
     const [qdir, setQdir] = useState(validateDir(searchParams.get('dir')));
     const [qbsFrom, setQbsFrom] = useState(validateInteger(searchParams.get('from')))
@@ -79,39 +77,33 @@ export default function ViewLineSchedules(){
                 return;
             }
             const schedules = response.data.schedules;
-            console.log("HERE schedules", schedules)
 
             if (schedules[0].trips.length === 0) {
                 setNoScheduleError("The line is broken, schedule has no trips")
                 return;
             }
-            let localDir = schedules[0].trips[0].boundFor;
 
-            //if tripId is provided in URL, then set selected schedule and direction accordingly
-            if (schedId){
-                schedules.findIndex(sched => {
-                    if (sched.id === validateInteger(schedId)) {
-                        console.log("!!!sched", sched)
-                        for (const trip of sched.trips) {
-                            if (trip.id === validateInteger(tripId)) {
-                                localDir = trip.boundFor;
-                                console.log("trippin", trip);
-                                if (trip.boundFor === "City bound") setFlipped(true)
-                                break;
-                            }
-                        }
-                      return true;
-                    }
-                })
+            //if user clicked on "City bound" schedule item in the 'Timetable page' then flip the directioni arrow
+            if (schedId && tripId) {
+                const entryTripItem = schedules.find(sched => sched.id === validateInteger(schedId)).trips.find(trip => trip.id === validateInteger(tripId));
+                if ( entryTripItem.boundFor === "City bound"){
+                    setFlipped(true)
+                    console.log("YES I DID IT I FLIPPED THE X");
+                    console.log("DIR IS", dir)
+                }
+                    
             }
+         
 
-            setDir(localDir);             
-            console.log("schedules",schedules);
             //first sort, later setSelectedSchedule
             schedules.sort((a,b) => {
-                console.log("the dir here is ",localDir)
-                const a1 = a.trips.find(trip=>trip.boundFor === localDir)?.timeList[0].split(":")
-                const b1 = b.trips.find(trip=>trip.boundFor === localDir)?.timeList[0].split(":")
+                let a1; let b1;
+                if (a.trips.length === 1) a1 = a.trips[0].timeList[0]?.split(":");
+                if (b.trips.length === 1) b1 = b.trips[0].timeList[0]?.split(":");
+
+                if (a.trips.length === 2) a1 = a.trips.find(trip=>trip.boundFor === dir)?.timeList[0].split(":")
+                if (b.trips.length === 2) b1 = b.trips.find(trip=>trip.boundFor === dir)?.timeList[0].split(":")
+                if (!a1 || !b1 ) return 1;
                 return (a1[0] * 60 + a1[1]) - (b1[0] * 60 + b1[1])
             })
 
@@ -131,7 +123,7 @@ export default function ViewLineSchedules(){
     }
 
     const generateTableData = () => {
-        const trip = data[selectedSchedule].trips.find(trip => trip.boundFor === dir);
+        const trip = getTripBySelectedDirOrFirst(data[selectedSchedule]);
         if (trip.routeDirReversed) trip.route.stopsArr.reverse()
         return trip.route.stopsArr.map((stop, index) => ({
                 stop: stop, 
@@ -154,6 +146,18 @@ export default function ViewLineSchedules(){
         setRuleFilter(filterCopy)
     }
 
+    const getTripBySelectedDirOrFirst = (schedule) => {
+        if (schedule.trips.length === 2){
+            console.log("2!!!!!!!!!", dir);
+            return schedule.trips.find(trip => trip.boundFor === dir)            
+        }
+
+        if (schedule.trips.length ===1){
+            console.log("1!!!!!!!!!", schedule.trips[0]);            
+            return schedule.trips[0]
+        }
+
+        }
     
     if (noScheduleError) return <main>{noScheduleError}</main>
     if (!data || !line || !dir || !allYearlyRules) return <main>loading...</main>
@@ -201,7 +205,9 @@ export default function ViewLineSchedules(){
                         ${schedule.id === data[selectedSchedule].id ? "list-group-item-primary" : ""}
                         
                         `} onClick={()=> setSelectedSchedule(  data.findIndex(sched => sched.id === schedule.id)  )}>
-                            <span className="my-layout-shift-fix" style={{minWidth:"3rem"}}>{schedule.trips.find(trip => trip.boundFor === dir).timeList[0].slice(0,5)}</span>
+                            <span className="my-layout-shift-fix" style={{minWidth:"3rem"}}>
+                                {getTripBySelectedDirOrFirst(schedule).timeList[0].slice(0,5)}
+                            </span>
                             <span>{generateDaysOfWeek(schedule.runsOnWeekly)}</span>
                             <span>{schedule.runsOnYearlyStr === "Apskritus metus" ? "-" : schedule.runsOnYearlyStr}</span>
                         </li>
@@ -224,8 +230,8 @@ export default function ViewLineSchedules(){
                         <div style={{ flex: 1 }} className="fs-3 text-center text-md-start ps-md-4">{line.routeEnd}</div>
                     </div>            
                     }    
-                    <div className="px-4 d-flex align-items-center flex-column">
-                            <span className="fs-4 my-3 text-secondary">{data[selectedSchedule].trips.find(trip => trip.boundFor === dir).route.routeNotes}</span>
+                    <div className="px-4 d-flex align-items-center flex-column">            
+                            <span className="fs-4 my-3 text-secondary">{getTripBySelectedDirOrFirst(data[selectedSchedule]).route.routeNotes}</span>
                             
                             <BsBubbles data={generateTableData()} />
                     </div>

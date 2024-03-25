@@ -1,4 +1,4 @@
-import { faArrowLeft, faRotateLeft, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft,  faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 
@@ -9,7 +9,6 @@ export default function SchedulesByRuleRow ({schedule}) {
         let name;
         if (tripDir.dir === "Out bound") name = <FontAwesomeIcon icon={faArrowLeft} style={{width: "16px",transform: "scaleX(-1)"}} />
         else if (tripDir.dir === "City bound") name = <FontAwesomeIcon icon={faArrowLeft} style={{ width: "16px"}} />
-        else if (tripDir.dir === "Cirlce") name = <FontAwesomeIcon icon={faRotateLeft} style={{ width: "16px"}} />
 
         name = <span style={{width:'75px'}} key={index}>{name} {tripDir.time}</span>; 
 

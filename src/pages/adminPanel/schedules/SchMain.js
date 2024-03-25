@@ -147,9 +147,15 @@ const handleSubmit = () => {
     if (!isAllDataValid(dataCopy)){
         setValidationOn(true);
         msgRun("Input validation failed, check if everything's entered right", "danger", 3000)
-        
         return;
     }
+    const boundForError = isBoundForInvalid(dataCopy);
+    if (boundForError) {
+        setValidationOn(true);
+        msgRun(boundForError, "danger", 8000)
+        return;
+    }
+
 
     //validation passed, calling post api
     setValidationOn(false)
@@ -208,6 +214,28 @@ const isAllDataValid = (data) => {
     }
 
     return true;
+}
+
+
+const isBoundForInvalid = (data) => {
+    //only valid when in a single trip schedule, the trip BoundFor is "One way"
+    //                        two trip schedule, #1 trip is "Out bound" #2 trip is "City bound"
+    const msg1 = "Input validation failed, In single trip schedules - trip direction must be 'One way' "
+    const msg2 = "Input validation failed, In two trip schedules - 1 trip must be 'Out bound' and the other 'City bound'"
+    const msg3 = "Min 1 trip per schedule, Max 2 trips per schedule"
+
+    for (const schedule of data) {
+        if (schedule.trips.length === 0) return msg3;
+        if (schedule.trips.length === 1)
+            if (schedule.trips[0].boundFor !== "One way") return msg1;
+        
+        if (schedule.trips.length === 2) {
+            const boundForArr = schedule.trips.map(trip => trip.boundFor);
+            if (!boundForArr.includes("Out bound") || !boundForArr.includes("City bound")) return msg2;
+        }
+        if (schedule.trips.length > 2 ) return msg3;
+    }
+    return false; //means not invalid :)
 }
 
 function evenOutArrays(arr1, arr2) {

@@ -1,4 +1,4 @@
-import { faArrowLeft, faRotateLeft, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft,  faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export default function SchedulePickTable({data, className, handleNewSchedule, selectedSchedule, handleClickOpen,
@@ -11,7 +11,6 @@ export default function SchedulePickTable({data, className, handleNewSchedule, s
         let name;
         if (trip.boundFor === "Out bound") name = <FontAwesomeIcon icon={faArrowLeft} style={{width: "16px",transform: "scaleX(-1)"}} />
         else if (trip.boundFor === "City bound") name = <FontAwesomeIcon icon={faArrowLeft} style={{ width: "16px"}} />
-        else if (trip.boundFor === "Cirlce") name = <FontAwesomeIcon icon={faRotateLeft} style={{ width: "16px"}} />
 
         const [hours, mins] = trip?.timeList[0].split(":")
         name = <span key={trip.id}>{name} {`${hours}:${mins}`}</span>; 
@@ -47,7 +46,9 @@ export default function SchedulePickTable({data, className, handleNewSchedule, s
                             <div className={`${index === selectedSchedule ? "bg-primary my-active" : ""} p-1`} 
                             style={{border: 
                                 validationOn && (row.runsOnWeekly.length === 0 || 
-                                    !row.runsOnYearlyId || !row.timeConstraintsDescription ||  row.trips.some(trip => trip.timeList.some(time=> !time))) ?
+                                    !row.runsOnYearlyId || row.trips.length < 1 || row.trips.length > 2 || (row.trips.length === 1 && row.trips[0].boundFor != "One way") ||
+/* this one line checks 1 thing */   row.trips.length === 2 && !(row.trips.map(trip => trip.boundFor).includes("Out bound") && row.trips.map(trip => trip.boundFor).includes("City bound")) ||     
+                                    row.trips.some(trip => trip.timeList.some(time=> !time))) ?
                                 "2px dashed red" : ""}}
                                 key={index} onClick={()=>handleClickOpen(index)}>
                             <div className="my-cursor-pointer my-active-scale-down d-flex gap-1">

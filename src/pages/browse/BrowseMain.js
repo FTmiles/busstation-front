@@ -52,7 +52,7 @@ export default function BrowseMain() {
           {logState()}
           {
         }
-             <table className="table ">
+             <table className="table " style={{width:"100%"}}>
             <thead>
                 <tr>
                     <th ref={th1} style={{width:th1w??"auto"}}>Line</th>

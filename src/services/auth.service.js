@@ -1,9 +1,11 @@
 //Authentication service
 
 import axios from "axios";
-import config from "config";
+import { API_ROOT_PATH } from "./user.service";
 
-const API_URL = `${config.API_ROOT_PATH}/api/auth/`;
+
+
+const API_URL = `${API_ROOT_PATH}/api/auth/`;
 
 // const register = (username, email, password) => {
 //   return axios.post(API_URL + "signup", {

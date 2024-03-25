@@ -30,10 +30,11 @@ export default function BrowseTableRow({ row, isEvenRow }) {
         className={`${isEvenRow ? "table-primary" : ""} my-cursor-pointer`}
       >
         <td><b>{row.name}</b></td>
-        <td>{row.goesTo}</td>
+        <td className="col-md-4 col-lg-2" >{row.goesTo}</td>
         <td onClick={(e) => handleExpand(e)}
-        className="my-hover-effect text-center">
+        className="my-hover-effect text-center d-md-none">
             <FontAwesomeIcon icon={faChevronDown} className={isExpanded?"expand-up":""} /></td>
+        <td className="my-ellipsis d-none d-md-table-cell">{row.mainStops.map(stop => stop.name).join(", ")}</td>
       </tr>
       {isExpanded && 
         <tr>
