@@ -24,7 +24,7 @@ jobs:
           DISABLE_ESLINT_PLUGIN=true npm run build
 
       - name: Delete .map
-        run: find ./dist/ -type f -name "*.map" -exec rm -f {} \;
+        run: find ./build/ -type f -name "*.map" -exec rm -f {} \;
 
       - name: Set up SSH key
         run: |
@@ -35,7 +35,7 @@ jobs:
 
       - name: Deploy to VPS
         run: |
-          rsync -av ./dist/ ${{ vars.VPS_USERNAME }}@${{ vars.VPS_IP }}:${{ vars.DEPLOY_PATH }}
+          rsync -av ./build/ ${{ vars.VPS_USERNAME }}@${{ vars.VPS_IP }}:${{ vars.DEPLOY_PATH }}
 
         env:
           SSH_AUTH_SOCK: /tmp/ssh-agent.sock
