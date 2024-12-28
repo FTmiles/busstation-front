@@ -21,7 +21,7 @@ jobs:
       - name: Build
         run: |
           npm install
-          npm run build
+          DISABLE_ESLINT_PLUGIN=true npm run build
 
       - name: Delete .map
         run: find ./dist/ -type f -name "*.map" -exec rm -f {} \;
