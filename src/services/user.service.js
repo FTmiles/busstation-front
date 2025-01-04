@@ -2,8 +2,7 @@
 import axios from "axios";
 import authHeader from "./auth-header";
 
-// export const API_ROOT_PATH = "https://anyksciaibus.info"
-export const API_ROOT_PATH = "http://69.57.163.7:8080"
+export const API_ROOT_PATH = "https://anybus.online"
 // export const API_ROOT_PATH = "http://localhost:8080"
 
 const API_URL = "";
