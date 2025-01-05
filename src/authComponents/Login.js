@@ -63,14 +63,14 @@ const Login = () => {
 
   return (
     <>
-    <div class=' d-flex justify-content-center gap-5'>
+    <div className=' d-flex justify-content-center gap-5'>
     <h1>Demo account:</h1> <div> Username: <b>boss</b> <br  /> Password: <b>2025</b></div>
     </div>
     
     <div className="card ms-auto me-auto text-center mt-5" style={{width: "18rem"}}>
   <div className="card-body">
   <img
-          src="http://localhost:3000/avatar.png"
+          src="/avatar.png"
           alt="profile-img"
           className="profile-img-card"
         />
