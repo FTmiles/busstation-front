@@ -15,7 +15,7 @@ export default function Navbar({admin}) {
     <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span className="navbar-toggler-icon"></span>
     </button>
-    <div className="collapse navbar-collapse justify-content-between" id="navbarNav">
+    <div className="collapse navbar-collapse" id="navbarNav">
       <ul className="navbar-nav">
         
         <li className="nav-item">
@@ -31,11 +31,15 @@ export default function Navbar({admin}) {
         <ul className="navbar-nav">
         {admin && <>
               <li className="nav-item">
-                  <NavLink className="nav-link" to="/admin-panel">Admin board</NavLink>
+                  <NavLink className="nav-link text-light" to="/admin-panel">Admin board</NavLink>
               </li>                
                 
                 </>
               }
+          {!admin && 
+               <li className="nav-item">
+                  <NavLink className="nav-link text-light" to="/admin-access">Admin board</NavLink>
+              </li>  }
           </ul>
         </div>
 

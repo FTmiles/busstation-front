@@ -41,7 +41,7 @@ const Login = () => {
     if (checkBtn.current.context._errors.length === 0) {
       AuthService.login(username, password).then(
         () => {
-          navigate("/");        //navigate("/profile");
+          navigate("/admin-panel");        //navigate("/profile");
           window.location.reload();
         },
         (error) => {
@@ -62,6 +62,11 @@ const Login = () => {
   };
 
   return (
+    <>
+    <div class=' d-flex justify-content-center gap-5'>
+    <h1>Demo account:</h1> <div> Username: <b>boss</b> <br  /> Password: <b>2025</b></div>
+    </div>
+    
     <div className="card ms-auto me-auto text-center mt-5" style={{width: "18rem"}}>
   <div className="card-body">
   <img
@@ -115,7 +120,7 @@ const Login = () => {
         </Form>  </div>
   </div>
 
-
+  </>
   );
 };
 

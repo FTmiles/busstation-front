@@ -51,7 +51,7 @@ function App() {
              <Route path="schedules/:lineId" element={<SchMain />} />
              <Route path="schedules/:lineId/:openScheduleId" element={<SchMain />} />
           </Route>
-          <Route path="/backdoor" element={<Login />} />
+          <Route path="/admin-access" element={<Login />} />
 
         </Route>
       </Routes>
