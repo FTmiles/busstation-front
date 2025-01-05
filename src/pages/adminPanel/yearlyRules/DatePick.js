@@ -6,12 +6,17 @@ export default function DatePick({dateRange, handleChange, index}){
  
     const [startDate, endDate] = (() => {
         let start = null, end = null;
-        
+
+        const startMonthFormatted = String(dateRange.startMonth).padStart(2, '0');
+        const startDayFormatted = String(dateRange.startDay).padStart(2, '0');
+        const endMonthFormatted = String(dateRange.endMonth).padStart(2, '0');
+        const endDayFormatted = String(dateRange.endDay).padStart(2, '0');
+
         if (dateRange.startMonth && dateRange.startDay) 
-            start = new Date(`2026-${dateRange.startMonth}-${dateRange.startDay}`);
+            start = new Date(`2026-${startMonthFormatted}-${startDayFormatted}`);
         
         if (dateRange.endMonth && dateRange.endDay)             
-            end = new Date(`2026-${dateRange.endMonth}-${dateRange.endDay}`);
+            end = new Date(`2026-${endMonthFormatted}-${endMonthFormatted}`);
         
             return [ start, end]
     })();
